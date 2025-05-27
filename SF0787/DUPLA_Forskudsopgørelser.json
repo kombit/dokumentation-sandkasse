@@ -1,0 +1,2981 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+		"x-svnRevision": "r6363",
+		"x-namespace": "http://www.kombit.dk/01/01/2022/",
+		"x-name": "DUPLAForskudsopgørelser_1",
+		"x-source": "Serviceplatformen",
+		"x-serviceUUID": "c33b49c3-1e14-4a3e-bace-2724aadf18b1",
+		"title": "KOMBIT DUPLA Forskudsopgørelser",
+		"description": "Formålet med API'et er at udstille funktionalitet vedrørende årsopgørelsen på Integrationsplatformen (DUPLA). Anvender kan ved hjælp af en aftale i DUPLA Aftalemodul specificere de nødvendige felter, i forhold til det konkrete anvendelsesformål. API'et returnerer udelukkende de felter til serviceanvender, som er specificeret i denne aftale. ",
+        "contact": {
+            "email": "fki@kombit.dk",
+            "name": "KOMBIT Fælleskommunal Infrastruktur",
+            "url": "https://kombit.dk"
+        },
+        "license": {
+            "name": "KOMBIT / Skatteforvaltningen"
+        },
+        "version": "1.0",
+		"x-functionality": "Servicen er baseret på REST og modtager et GET Request med query parameters til at specificere output. Data er repræsenteret som JSON og til servicen findes der en OpenAPI-specifikation. Komplethed Der udstilles på nuværende tidspunkt kun de felter, der har været et konkret behov for. Nye felter kan løbende tilføjes. Korrekthed Der udstilles kun godkendte forskudsopgørelser, men en gyldig forskudsopgørelse kan på et senere tidspunkt erstattes af en ny forskudsopgørelse som betyder, at den tidligere forskudsopgørelse ikke længere er gyldig. Aktualitet Vær opmærksom på, at der går tid fra at der rettes i data, der ligger til grund for forskudsopgørelsen, til der dannes en ny gyldig forskudsopgørelse i Forskud-systemet, og der yderligere kan gå op til en dag før den gyldige forskudsopgørelse bliver tilgængelig via denne service. ",
+		"x-requirements": "Aftaler oprettes i Dataudvekslingsplatformen. Der må fra servicen kun hentes data nødvendigt for aktuelle sager i henhold til aftalen, og der må kun hentes den nødvendige data der skal bruges til sagen. Data må ikke efterfølgende genbruges til andre formål, og må alene gemmes til at dokumentere rigtigheden af en afgørelse, eller i forbindelse med aktindsigt. Information fra servicen må kun gemmes så længe lovgivning vedrørende logning, aktindsigt eller klagesager tillader det, i forhold til det formål informationer er hentet til. Versionering Til versionering af servicen bruges der semantisk versionering. Major og minor defineres af informationsarkitekten mens patch defineres af udvikleren. Det giver udvikleren mulighed for at lave fejlrettelser, der ikke kræver ændringer til specifikationen. En wordrapport indeholder derfor kun major- og minor-versionsnummer, mens Open API-specifikationen indeholder det fulde versionsnummer. Første major-version defineres når den første anvender har gennemført acceptancetest. Efterfølgende vil alle ændringer til specifikationen, der bryder med bagudkompatibilitet, resultere i en ny major-release. ",
+		"x-fuldmagter": [
+		  {
+			"id": "TSB_WS_R75_PERSON_KONTROL_OPL",
+			"name": "ForskudsopgørelseHent",
+			"description": "Med denne fuldmagt har man ret til at hente oplysninger på vegne af en borger",
+			"primaerIdentitet": "PersonCPRNummer"
+		  }
+		]
+		},
+		"servers": [
+			{
+				"description": "Endepunkt til UFST produktionsmiljø",
+				"url": "https://prod.serviceplatformen.dk/service/DUPLAForskudsopgørelser_1"
+			},
+			{
+				"description": "Endepunkt til UFST TFE-miljø",
+				"url": "https://exttest.serviceplatformen.dk/service/DUPLAForskudsopgørelser_1"
+			}
+		],
+		"security": [
+			{
+				"adgangsgrundlagAuth": [ ],
+				"bearerAuth": [ ]
+			}
+		],
+		"paths": {
+		"/Forskudsopgørelse": {
+			"parameters": [
+				{
+					"$ref": "#/components/parameters/x-TransaktionsId"
+				},
+				{
+					"$ref": "#/components/parameters/x-TransaktionsTid"
+				},
+				{
+					"$ref": "#/components/parameters/x-OnBehalfOfUser"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Processing"
+				},
+				{
+					"name": "x-major-version",
+					"in": "header",
+					"required": false,
+					"description": "Servicen versioneres med Semantisk versionering (Major), hvor kun Major versioner indeholder breaking changes til snitfladen. Som udgangspunkt er der kun adgang til den nyeste version af services på en et miljø og det er kunderne såvel som service udstillers opgave at finde fejl på de lavere miljøer før en ny release løftes til produktion. Specifikt for nye Major releases kan der aftales en paralleldrift hvor den gamle version kan tilgås ved at specificere x-major-version. Hvis der kaldes med en x-major-version som ikke er tilgængelig modtages en fejl. Når x-major-version ikke er udfyldt kaldes den nyeste version automatisk.",
+					"schema": {
+						"type": "string",
+						"pattern": "[0-9]*"
+					}
+				}
+			],
+		  "get": {
+			"summary": "ForskudsopgørelseHent",
+			"description": "Servicen kræver en liste af PersonCPRNummer og en liste af IndkomstÅr og returnerer de i dataudvekslingsaftalen specificerede data fra den gældende forskudsopgørelse for de udvalgte IndkomstÅr for de udvalgte PersonCPRNummer. Med udgangspunkt i DIGST Fælles Retningslinjer for webservices R19, R21 og R22 er der yderligere søgeparametre, som kan benyttes. Der kan defineres en periode ved at bruge UdstillingRegistreringFra og/eller UdstillingRegistreringTil, som vil resultere i, at der kun leveres forskudsopgørelser der i den periode, er registreret som udstillet på DUPLA og dermed gjort tilgængelig for serviceanvenderne. Dette kan fx bruges til at hente forskudsopgørelser, der er blevet tilgængelige siden der sidst blev forespurgt på løsningen, ved at udfylde UdstillingRegistreringFra med tidspunktet der sidst blev forespurgt. Som udgangspunkt leveres kun aktuelle forskudsopgørelser, men der kan hentes den forskudsopgørelse der var gyldig eller vil være gyldig på et specifikt tidspunkt ved at udfylde ForskudsopgørelseGyldigTidspunkt. Vær opmærksom på, at en ny forskudsopgørelse ikke nødvendigvis resulterer i synlige ændringer, da aftalen specificeret i aftalemodulet ikke nødvendigvis omfatter de felter som er påvirkede.",
+			"operationId": "94d10218-bfe5-4123-a387-872c557d7152",
+			"parameters": [
+			  {
+				"name": "PersonCPRNummer",
+				"in": "query",
+				"required": true,
+				"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en person der er skattepligtig til danmark.",
+				"schema": {
+				  "type": "array",
+				  "items": {
+					"type": "string",
+					"pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000",
+					"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person. Angives i format: XXXXXXXXXX"
+				  }
+				}
+			  },
+			  {
+				"name": "IndkomstÅr",
+				"in": "query",
+				"required": true,
+				"description": "Det år, hvor den indkomst, der er lagt til grund for skatteberegningen, er indtjent.",
+				"schema": {
+				  "type": "array",
+				  "items": {
+					"type": "integer",
+					"description": "Et årstal. Gyldige værdier er 1700 - 9999",
+					"minimum": 1700,
+					"exclusiveMinimum": false,
+					"maximum": 9999,
+					"exclusiveMaximum": false
+				  }
+				}
+			  },
+			  {
+				"name": "ForskudsopgørelseGyldigTidspunkt",
+				"in": "query",
+				"required": false,
+				"description": "Tidspunkt for en forskudsopgørelses gyldighed.",
+				"schema": {
+				  "type": "string",
+				  "format": "date-time",
+				  "description": "En datotid datatype, som samlet betegner en dato og tid. Svarer indholdsmæssigt til XML Schema-typen dateTime. Angives i format: YYYY-MM-DDTHH:MM:SSZ"
+				}
+			  },
+			  {
+				"name": "UdstillingRegistreringFra",
+				"in": "query",
+				"required": false,
+				"description": "Angiver det tidspunkt, data tidligst må være registreret i udstillingsløsningen. Benyttes til udsøgning af ny/opdateret data.",
+				"schema": {
+				  "type": "string",
+				  "format": "date-time",
+				  "description": "En datotid datatype, som samlet betegner en dato og tid. Svarer indholdsmæssigt til XML Schema-typen dateTime. Angives i format: YYYY-MM-DDTHH:MM:SSZ"
+				}
+			  },
+			  {
+				"name": "UdstillingRegistreringTil",
+				"in": "query",
+				"required": false,
+				"description": "Angiver det tidspunkt, data senest må være registreret i udstillingsløsningen. Benyttes til udsøgning af ny/opdateret data.",
+				"schema": {
+				  "type": "string",
+				  "format": "date-time",
+				  "description": "En datotid datatype, som samlet betegner en dato og tid. Svarer indholdsmæssigt til XML Schema-typen dateTime. Angives i format: YYYY-MM-DDTHH:MM:SSZ"
+				}
+			  }
+			],
+			"responses": {
+				"200": {
+					"content": {
+						"application/json": {
+							"schema": {
+											"$ref": "#/components/schemas/ForskudsopgoerelseHent_response"
+							}
+						}
+					},
+					"description": "Forventet svar ved korrekt forespørgsel",
+					"headers": {
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-data-antal": {
+							"$ref": "#/components/headers/x-data-antal"
+						}
+					}
+				},
+				"500": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Kald til kilde fejlede. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				},
+				"default": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Fejl. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				}
+			}
+		  }
+		}
+    },
+    "components": {
+        "headers": {
+            "ufst-adgangsgrundlag": {
+                "description": "UFST-adgangsgrundlag indeholder id på hvilken aftale der ønskes at gøres brug af, alternativt for rolle-baserede api'er, hvilken af identitetens rolle der ønskes at authentificere som",
+                "schema": {
+                    "pattern": "urn:ufst:adgangsgrundlag:(?:aftale|rolle):[^[:space:]]+",
+                    "type": "string"
+                }
+            },
+            "x-major-version": {
+                "description": "Servicen versioneres med Semantisk versionering (Major, Minor, patch), hvor kun Major versioner indeholder breaking changes til snitfladen. Som udgangspunkt er der kun adgang til den nyeste version af services på en et miljø og det er kunderne såvel som service udstillers opgave at finde fejl på de lavere miljøer før en ny release løftes til produktion. Specifikt for nye Major releases kan der aftales en paralleldrift hvor den gamle version kan tilgås ved at specificere x-major-version. Hvis der kaldes med en x-major-version som ikke er tilgængelig modtages en fejl. Når x-major-version ikke er udfyldt kaldes den nyeste version automatisk.",
+                "schema": {
+                    "pattern": "([0-9])*",
+                    "type": "integer"
+                }
+            },
+			"x-data-antal": {
+				"description": "Angiver hvor mange data elementer, der returneres i et returkode 200 svar",
+				"schema": {
+				  "type": "integer"
+				}
+			},
+            "x-request-id": {
+                "description": "Request id er et requestidentifikator der bruges til at spore et kald og tilhørende svar. Request id må modsat transaktions id ikke genbruges. Request id skal være en UUID version 4, jf. ietf RFC 4122.",
+                "schema": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                }
+            },
+            "x-TransaktionsId": {
+                "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsId"
+                }
+            },
+            "x-transaktions-id": {
+                "description": "Transaktions id er en universelt transaktionidentifikator der bruges til at spore en samlet handling på tværs af flere kald og systemer. Hvis en handling resultere i flere kald skal Transaktions id genbruges og hvis et kald finder sted grundet en handling i et andet system skal transaktions id fra den oprindelige handling bruges til videre kald. Transaktions id skal være en UUID version 4, jf. ietf RFC 4122 og skal kunne korreleres med logfiler fra det kaldende system for altid at kunne svare på hvem der er ansvarlig for den handling der har resulteret i kaldet.",
+                "schema": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                }
+            },
+            "x-TransaktionsTid": {
+                "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsTid"
+                }
+            }
+        },
+        "parameters": {
+            "x-OnBehalfOfUser": {
+                "description": "Identifikation af en bruger i det kaldende system",
+                "in": "header",
+                "name": "x-OnBehalfOfUser",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-OnBehalfOfUser"
+                }
+            },
+            "x-Processing": {
+                "description": "Mulighed for at passere yderligere kontekstuelle variable, f.eks. instrukser til teststubbe.",
+                "in": "header",
+                "name": "x-Processing",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Processing"
+                }
+            },
+            "x-Rute-AfsenderItSystemInstans": {
+                "description": "En UUID der identificerer kaldende it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+                "in": "header",
+                "name": "x-Rute-AfsenderItSystemInstans",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-AfsenderItSystemInstans"
+                }
+            },
+            "x-Rute-AfsenderOrganisation": {
+                "description": "Identificerer kaldende organisation.",
+                "in": "header",
+                "name": "x-Rute-AfsenderOrganisation",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-AfsenderOrganisation"
+                }
+            },
+            "x-Rute-ModtagerItSystemInstans": {
+                "description": "En UUID der identificerer kaldte it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+                "in": "header",
+                "name": "x-Rute-ModtagerItSystemInstans",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-ModtagerItSystemInstans"
+                }
+            },
+            "x-Rute-ModtagerOrganisation": {
+                "description": "Identificerer modtagende organisation.",
+                "in": "header",
+                "name": "x-Rute-ModtagerOrganisation",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-ModtagerOrganisation"
+                }
+            },
+            "x-TransaktionsId": {
+                "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+                "in": "header",
+                "name": "x-TransaktionsId",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsId"
+                }
+            },
+            "x-TransaktionsTid": {
+                "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+                "in": "header",
+                "name": "x-TransaktionsTid",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsTid"
+                }
+            }
+        },
+        "schemas": {
+            "ForskudsopgoerelseHent_response": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "data": {
+                                "items": {
+                                    "$ref": "#/components/schemas/ForskudsopgoerelseHentResponse"
+                                },
+                                "type": "array"
+                            },
+                            "HovedoplysningerSvarREST": {
+                                "$ref": "#/components/schemas/HovedoplysningerSvarREST"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "HovedoplysningerSvarREST"
+                        ]
+                    }
+                ]
+            },
+		  "ForskudsopgoerelseHentResponse": {
+			"x-entityname": "ForskudsopgørelseHentResponse",
+			"required": [
+			  "type",
+			  "id"
+			],
+			"properties": {
+			  "type": {
+				"type": "string"
+			  },
+			  "id": {
+				"description": "Id skal være et unikt id for et specifik resource objekt, men være stabil på tværs af flere versioner af samme resource object.",
+				"type": "string"
+			  },
+			  "attributes": {
+				"$ref": "#/components/schemas/Forskudsopgoerelse"
+			  }
+			}
+		  },
+		  "Forskudsopgoerelse": {
+			"x-entityname": "Forskudsopgørelse",
+			"x-ui-selectable": true,
+			"required": [
+			  "PersonCPRNummer",
+			  "IndkomstÅr",
+			  "ForskudsopgørelseGyldigFra",
+			  "UdstillingRegistreringTidspunkt"
+			],
+			"properties": {
+			  "PersonCPRNummer": {
+				"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en person der er skattepligtig til danmark.",
+				"type": "string",
+				"x-typeDescription": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person. Angives i format: XXXXXXXXXX",
+				"pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000"
+			  },
+			  "IndkomstÅr": {
+				"description": "Det år, hvor den indkomst, der er lagt til grund for skatteberegningen, er indtjent.",
+				"type": "integer",
+				"x-typeDescription": "Et årstal. Gyldige værdier er 1700 - 9999",
+				"maximum": 9999,
+				"exclusiveMaximum": false,
+				"minimum": 1700,
+				"exclusiveMinimum": false
+			  },
+			  "ForskudsopgørelseGyldigFra": {
+				"description": "Starttidspunkt for gyldigheden af en forskudsopgørelse er det tidspunkt en forskudsopgørelse bliver erkendt gyldig og kan bruges til sagsbehandling. ",
+				"type": "string",
+				"format": "date",
+				"x-typeDescription": "Alle gyldige datoer i den danske kalender. Angives i format: YYYY-MM-DD"
+			  },
+			  "UdstillingRegistreringTidspunkt": {
+				"description": "Angiver det tidspunkt, data er registreret i udstillingsløsningen",
+				"type": "string",
+				"format": "date-time",
+				"x-typeDescription": "En datotid datatype, som samlet betegner en dato og tid. Svarer indholdsmæssigt til XML Schema-typen dateTime. Angives i format: YYYY-MM-DDTHH:MM:SSZ"
+			  },
+			  "SkattePligtPersonOmfangKode": {
+				"description": "Felt: 106 Koden oplyser om skattepligtsomfang, som er en information om hvilke regler i kildeskatteloven en person skal beskattes efter. Hovedreglen er fuld skattepligt efter nævnte lovs § 1, som lidt forenklet betyder, at personen er bosiddende i Danmark og derfor er skattepligtig til Danmark af al indkomst (også benævnt globalindkomst). En person kan også være begrænset skattepligtig (ikke bosiddende i Danmark), dvs. kun skattepligtig af bestemte indtægter. Koden har følgende værdier (numerisk): 0 = Fuldt skattepligtig. 1 = Begrænset skattepligtig uden personfradrag. 2 Ej skattepligtig. Ønskes optaget på kommende forskudsmandtal. 3 Begrænset skattepligtig med ret til personfradrag, jf. PSL § 10, stk. 5 og 6. 4 Diplomat (KSL § 1, stk. 1. nr. 4). 6 Ej skattepligtig. Ønskes ikke optaget på kommende mandtal. 7 Værdien må ikke bruges - giver forkert skattekommune. 8 Dobbeltdomicileret. 9 Ej skattepligtig, henstand efter KSL 73B, VSL, ABL og KGL.",
+				"type": "string",
+				"x-typeDescription": "Kode som kan antage talværdierne 0-9"
+			  },
+			  "VirksomhedKode": {
+				"description": "Koden anvendes til at vise, om skatteyderen er tilmeldt virksomhedsordningen eller kapitalafkastordningen og/eller er vekselerer. Felt: 184 Koden kan have følgende værdier: Blank: Ikke i virksomhedsordning eller kapitalafkastordning, ikke vekselerer. 1: Virksomhedsordning, ikke vekselerer. 2: Virksomhedsordning, vekselerer (se endvidere beskrivelsen til felt 246) 3: Ikke i virksomhedsordning eller kapitalafkastordning, vekselerer. 4: Kapitalafkastordning, ikke vekselerer. 5: Kapitalafkastordning, vekselerer. ",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "ForskudsopgørelseSambeskatningKode": {
+				"description": "Felt: 101 Dette er en kode som findes i både forskuds- og årsopgørelsessystemerne. Kodeværdierne dækker over skattemæssige sambeskatningsforhold. Koden har følgende værdier (numerisk): Værdi\tBetydning 1\tEnlig, ikke gift. Beskattes som enlig. Værdien opsættes eller indberettes for skatteydere, der ikke er gift (henvisningsnummer 000000 - 0000 i CSR-P ved indkomstårets udgang). 2\tGift. Sambeskattes. 3\tNygift. Sambeskattes. 4\tGift, separeret. Beskattes som enlig (hentes automatisk fra CSR-P). 5\tGift, ikke sambeskattet for indeværende (herunder plejehjemsanbringelse).",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "PersonStatusBobehandlingKode": {
+				"description": "Kode for typen af behandlingen af et dødsbo. Denne status vedrører boet for den aktuelle person. A = Boudlægsbo. B = Uskiftet bo, ægtefælleudlæg eller forenklet privat skifte § 34. C = Privat skifte, forenklet privat skifte § 33 eller bobestyrerbo. D = Uskiftet bo + skifte såvel privat som ved bobestyrer. E = Ingen bobehandling her i landet. Felt: 160",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "PersonStatusÆgtefælleBobehandlingKode": {
+				"description": "Kode for typen af behandlingen af et dødsbo. Denne status vedrører boet for den aktuelle persons ægtefælle. A = Boudlægsbo. B = Uskiftet bo, ægtefælleudlæg eller forenklet privat skifte § 34. C = Privat skifte, forenklet privat skifte § 33 eller bobestyrerbo. D = Uskiftet bo + skifte såvel privat som ved bobestyrer. E = Ingen bobehandling her i landet. Felt: 161",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "ForskudsopgørelseForskudtRegnskabsår": {
+				"description": "Kode der angiver startmåneden for et forskudt indkomstår. Felt 120 Et forskudt indkomstår indledes altid forud for et normalt indkomstår. ",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "ForskudsopgørelseKørselsdato": {
+				"description": "Kørselsdato for forskudsopgørelsen.",
+				"type": "string",
+				"format": "date",
+				"x-typeDescription": "Alle gyldige datoer i den danske kalender. Angives i format: YYYY-MM-DD"
+			  },
+			  "ForskudsopgørlseBeregningstidspunkt": {
+				"description": "Forskudsopgørelsens beregningstidspunkt. Angives i formatet tt:mm:ss ",
+				"type": "string"
+			  },
+			  "GældssaneringStatusKode": {
+				"description": "Felt 113 Gældssanering indledt - fastfrysning af B-skat Værdisæt: 1 = Gældssanering indledt, B-skatter fastfrosset fra ansøgningstidspunkt. 2 = Gældssanering, ansøgning afvist.",
+				"type": "integer",
+				"maximum": 99,
+				"exclusiveMaximum": false,
+				"minimum": 1,
+				"exclusiveMinimum": false
+			  },
+			  "SkattekortTypeKode": {
+				"description": "Kode som entydig identificerer en skattekort type. Der findes pt. følgende værdier af eSkattekortTypeKode: 00 = Intet skattekort 01 = Bruttokort 02 = Hovedkort 03 = Frikort 04 = Bikort 05 = Bruttokort uden lønindeholdelse 06 = Hovedkort uden lønindeholdelse 07 = Bikort uden lønindeholdelse",
+				"type": "integer",
+				"x-typeDescription": "Vilkårligt heltal på 1-2 cifre.",
+				"maximum": 99,
+				"exclusiveMaximum": false,
+				"minimum": 0,
+				"exclusiveMinimum": false
+			  },
+			  "eSkattekortForskudTrækProcent": {
+				"description": "Den procent som der indeholdes forskuds A-skat med ved udbetaling af indkomstskattepligtigt beløb.",
+				"type": "integer",
+				"x-typeDescription": "Positivt heltal, som kan være op til tre cifre langt. Fra 0 til 999",
+				"maximum": 999,
+				"exclusiveMaximum": true,
+				"minimum": 0,
+				"exclusiveMinimum": true
+			  },
+			  "BeregnetMånedsfradrag": {
+				"description": "Feltet indeholder borgerens månedlige fradrag før der trækkes skat, felt 384 i forskudsopgørelsen (BMDFR).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  },
+			  "Skattekommune": {
+				"description": "Feltet indeholder den skattekommune, som borgeren afregner til - altså den kommune borgeren boede i den 5/9 i året før indkomståret.",
+				"type": "integer",
+				"x-typeDescription": "Der er 98 kommuner i Danmark som hver især er identificeret af et tre-cifret nummer.",
+				"maximum": 999,
+				"exclusiveMaximum": false,
+				"minimum": 100,
+				"exclusiveMinimum": false
+			  },
+			  "ForskudsskatEfterAMBidragTotal": {
+				"description": "Forskudsskat til opkrævning som A-skat (trækprocent) og B-skat mv., felt 2995 i forskudopgørelsen (BSAMSK).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  },
+			  "SambeskattetMed": {
+				"$ref": "#/components/schemas/SambeskattetMed"
+			  },
+			  "PersonligIndkomst": {
+				"$ref": "#/components/schemas/PersonligIndkomst"
+			  },
+			  "UdenlandskPersonligIndkomst": {
+				"$ref": "#/components/schemas/UdenlandskPersonligIndkomst"
+			  },
+			  "Søindkomst": {
+				"$ref": "#/components/schemas/Soeindkomst"
+			  },
+			  "Pensionsydelser": {
+				"$ref": "#/components/schemas/Pensionsydelser"
+			  },
+			  "UdenlandskPension": {
+				"$ref": "#/components/schemas/UdenlandskPension"
+			  },
+			  "SocialeYdelser": {
+				"$ref": "#/components/schemas/SocialeYdelser"
+			  },
+			  "ØvrigeYdelser": {
+				"$ref": "#/components/schemas/OevrigeYdelser"
+			  },
+			  "BeregnetPersonligIndkomst": {
+				"$ref": "#/components/schemas/BeregnetPersonligIndkomst"
+			  },
+			  "FradragIPersonligIndkomst": {
+				"$ref": "#/components/schemas/FradragIPersonligIndkomst"
+			  },
+			  "AMBidrag": {
+				"$ref": "#/components/schemas/AMBidrag"
+			  },
+			  "Kapitalindkomst": {
+				"$ref": "#/components/schemas/Kapitalindkomst"
+			  },
+			  "UdenlandskKapitalindkomst": {
+				"$ref": "#/components/schemas/UdenlandskKapitalindkomst"
+			  },
+			  "BeregnetKapitalIndkomst": {
+				"$ref": "#/components/schemas/BeregnetKapitalIndkomst"
+			  },
+			  "FradragIKapitalindkomst": {
+				"$ref": "#/components/schemas/FradragIKapitalindkomst"
+			  },
+			  "Aktieindkomst": {
+				"$ref": "#/components/schemas/Aktieindkomst"
+			  },
+			  "SelvstændigVirksomhed": {
+				"$ref": "#/components/schemas/SelvstaendigVirksomhed"
+			  },
+			  "UdenlandskSelvstændigVirksomhed": {
+				"$ref": "#/components/schemas/UdenlandskSelvstaendigVirksomhed"
+			  },
+			  "Skibsvirksomhed": {
+				"$ref": "#/components/schemas/Skibsvirksomhed"
+			  },
+			  "Kapitalafkastordning": {
+				"$ref": "#/components/schemas/Kapitalafkastordning"
+			  },
+			  "VirksomhedOrdning": {
+				"$ref": "#/components/schemas/VirksomhedOrdning"
+			  },
+			  "KunstnerOrdning": {
+				"$ref": "#/components/schemas/KunstnerOrdning"
+			  },
+			  "KunstnerVirksomhedOrdning": {
+				"$ref": "#/components/schemas/KunstnerVirksomhedOrdning"
+			  },
+			  "LigningsmæssigtFradrag": {
+				"$ref": "#/components/schemas/LigningsmaessigtFradrag"
+			  },
+			  "ReguleretTab": {
+				"$ref": "#/components/schemas/ReguleretTab"
+			  },
+			  "EjReguleretTab": {
+				"$ref": "#/components/schemas/EjReguleretTab"
+			  },
+			  "Ejendom": {
+				"$ref": "#/components/schemas/Ejendom"
+			  },
+			  "JubilæumGratialeFratrædelseGodtgørelse": {
+				"$ref": "#/components/schemas/JubilaeumGratialeFratraedelseGodtgoerelse"
+			  }
+			}
+		  },
+		  "SambeskattetMed": {
+			"x-entityname": "SambeskattetMed",
+			"x-ui-selectable": true,
+			"properties": {
+			  "PersonCPRNummer": {
+				"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en person der er skattepligtig til danmark.",
+				"type": "string",
+				"x-typeDescription": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person. Angives i format: XXXXXXXXXX",
+				"pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000"
+			  }
+			}
+		  },
+		  "PersonligIndkomst": {
+			"x-entityname": "PersonligIndkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "PersonligIndkomstNulansættelse": {
+				"description": "null",
+				"type": "boolean",
+				"x-typeDescription": "Dette er en boolean datatype, hvor man kan vælge mellem ja og nej (hhv. true og false)."
+			  },
+			  "TopskatGrundlagBeløb": {
+				"description": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "PersonligIndkomstLønIndkomst": {
+				"description": "Beløb der udgør løn, tabt arbejdsfortjeneste og lign., herunder feriegodtgørelse og tilskud fra arbejdsgiver, værdi af fri bil (firmabil), fri kost og logi mv. I SLUT: Felt 202 I Forskud: Felt 201",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstPrivatDagplejeHushjælp": {
+				"description": "Beløb der udgør indkomst ved f.eks. privat dagpleje, vederlag fra foreninger på under 1.500 kr. for udført arbejde, værdien af visse uafdækkede pensionstilsagn og værdien af fri telefon. Rubrik: 15 Felt: 207",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstHonorar": {
+				"description": "Beløb der udgør honorarer udbetalt fra Danmark som B-indkomst,  indkomst ved privat hushjælp (herunder ydelser, hvor køberen får servicefradrag),  værdien af medarbejderaktier og anparter samt tegnings- og køberetter til aktier og anparter modtaget som løn i et ansættelsesforhold eller af bestyrelsesmedlemmer, værdien af fri helårsbolig, fri sommerbolig og fri lystbåd til direktører, hovedaktionærer og andre med væsentlig indflydelse på egen aflønningsform og værdien af fri bil, fri helårsbolig, fri sommerbolig og fri lystbåd som udbytte til hovedaktionærer, der ikke er ansat i selskabet. Rubrik: 12 Felt: 210",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstUnderholdsbidrag": {
+				"description": "Beløb der udgør underholdsbidrag, som er modtaget fra tidligere ægtefælle, aftægtsydelse, fx værdien af fri bolig og underholdsbidrag til et barn. Rubrik: 19 Felt: 212",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstHævningEtableringsKonto": {
+				"description": "Beløb der udgør hævning af etableringskontomidler til køb af aktier mv. Rubrik: 137 Felt: 215 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstGruppeLivsForsikringLegatPersonaleGoder": {
+				"description": " Beløb der udgør skattepligtige uddelinger fra foreninger og fonde, præmier til gruppelivsforsikring betalt af pensionsselskaber eller lignende, værdien af fri helårsbolig, værdien af fri lystbåd, værdien af fri medielicens, værdien af fri sommerbolig i Danmark, tilbagebetalte præmier til forsikringer, hvor tilbagebetalingen skyldes præmiefritagelse og værdien af personalelån. Rubrik: 17 Felt: 229 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstHævningIværksætterKonto": {
+				"description": "Beløb der udgør hævning af iværksætterkontomidler til køb af aktier mv. Rubrik: 134 Felt: 235",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstDanskeRoyalties": {
+				"description": "Beløbet udgør danske royalties for begrænset skattepligtige, som vælger at blive beskattet som grænsegænger (KSL afsnit 1A). Felt 242.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstAndenPersonligIndkomst": {
+				"description": " I rubrikken skal oplyses lønindkomster, der ikke indgår i andre rubrikker. Skriv det samlede beløb uden at trække arbejdsmarkedsbidrag fra. Beløbet i rubrikken skal blandt andet omfatte: - Værdien af fri sommerbolig i udlandet (værdien af fri sommerbolig i Danmark indgår i rubrik 17). - Værdien af kost og logi. - Mindre personalegoder (med en værdi på under 1.000 kroner hver), hvis de har en samlet værdi på over 1.000 kr. - Ferierejser betalt af din arbejdsgiver (gælder også ferierejser, der kombineres med en forretningsrejse). - Legater. - Lejeindtægt, hvis du fremlejer din lejebolig. - Skattepligtige gevinster ved spil og væddemål. - Skattepligtige offentlige tilskud. - Indtægt fra vedvarende energianlæg, herunder vindmøller. - Fortjeneste ved salg af ædle metaller mv. - Genvundne afskrivninger ved salg af bygninger på lejet grund eller ejendom med hjemfaldspligt og lignende. - Fortjeneste ved salg af aktiver, hvorpå der er foretaget skattemæssige afskrivninger. Rubrik: 20 Felt: 250",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstEngangsbeløb": {
+				"description": "Felt 575 Ved omregning efter PSL § 14, stk. 1, af personlig indkomst fra periode til helår indgår felterne 246 (for vekselerere), 208, 215, 220, 230, 235 275, 355, 356, 416, 433, 436, 444, 477, 530 og 533 som engangsbeløb. Desuden er den skattepligtige del af felterne 243, 256 og 260 engangsbeløb. Beløb i felt 575 skal være reduceret med et eventuelt AM-bidrag. Engangsbeløb i felt 575 er således \"heraf-beløb\", dvs. at beløbet desuden skal være indeholdt i den personlige indkomst i øvrigt. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstAfkastObligationerHybrid": {
+				"description": "Felt 251 - Afkast på hybride obligationer.",
+				"type": "integer",
+				"x-typeDescription": "Et positivt beløb som ingen decimaler har. Værdierne ligger indenfor følgende område: 0 - 99.999.999.999",
+				"maximum": 99999999999,
+				"exclusiveMaximum": false,
+				"minimum": 0,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstAfkastObligationerHybridVirksomhed": {
+				"description": "Felt 252 - Afkast på hybride obligationer i virksomhed.",
+				"type": "integer",
+				"x-typeDescription": "Et positivt beløb som ingen decimaler har. Værdierne ligger indenfor følgende område: 0 - 99.999.999.999",
+				"maximum": 99999999999,
+				"exclusiveMaximum": false,
+				"minimum": 0,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb22Pct": {
+				"description": "Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 22% Felt: 492",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb23HalvPct": {
+				"description": "Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 23,50% Felt: 349",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb24HalvPct": {
+				"description": " Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 24,50% Felt: 148",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb25Pct": {
+				"description": " Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 25% Felt: 236",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb28Pct": {
+				"description": " Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 28% Felt: 257",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb30Pct": {
+				"description": " Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 30% Felt: 269",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb32Pct": {
+				"description": " Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på henholdsvis 32% Felt: 270",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb34Pct": {
+				"description": "Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på henholdsvis 34%. Felt på årsopgørelsen: 275 Felt på forskudsopgørelsen 276",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb38Pct": {
+				"description": "Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på henholdsvis 38 %. Felt på årsopgørelsen: 275 Felt på forskudsopgørelsen: 277",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "HævetOpsparetOverskudBeløb50Pct": {
+				"description": "Beløb som overføres fra konto for opsparet overskud, tillagt virksomhedsskatten på 50%. Felt på årsopgørelsen: 275 Felt på forskudsopgørelsen: 278",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstOverførtKonjunkturUdligning22Pct": {
+				"description": "Overført fra konto for konjunkturudligning til 22 %-beskatning. Felt: 494",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstOverførtKonjunkturUdligning23HalvPct": {
+				"description": "Overført fra konto for konjunkturudligning til 23,5 %-beskatning. Felt: 369",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstOverførtKonjunkturUdligning24HalvPct": {
+				"description": "Beløb som er overført fra konto for konjunkturudligning til 24,5 %-beskatning. Felt: 153 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstOverførtKonjunkturUdligning25Pct": {
+				"description": "Overført fra konto for konjunkturudligning til 25 %-beskatning. Felt: 205 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "GrønCheckAftrapning": {
+				"description": "Indkomst til  aftrapning af supplerende grøn check",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFremførtUnderskud": {
+				"description": "Fremført underskud der vedrører personlig indkomst. Felt 860",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstTotal": {
+				"description": "Sumbeløb, der udgør den samlede sum af den personlige indkomst.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "MedarbejdendeÆgtefælle": {
+				"$ref": "#/components/schemas/MedarbejdendeAegtefaelle"
+			  }
+			}
+		  },
+		  "MedarbejdendeAegtefaelle": {
+			"x-entityname": "MedarbejdendeÆgtefælle",
+			"x-ui-selectable": true,
+			"properties": {
+			  "MedarbejdendeÆgtefælleIndkomst": {
+				"description": "Indkomst overført fra resultat af ægtefælles selvstændige virksomhed. Felt: 264",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "UdenlandskPersonligIndkomst": {
+			"x-entityname": "UdenlandskPersonligIndkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "UdenlandskPersonligIndkomstEjendom": {
+				"description": "Indtægter af egen ejendom (en- og tofamiliesejendom), der ligger i et andet land end Danmark Felt 248 Rubrik 461",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstLønindtægt": {
+				"description": "Lønindtægt ved arbejde i udlandet; AM-pligtig Beløbet udgør udenlandsk personligindkomst omfattet af reglerne om lempelse i Ligningslovens § 33A, stk. 1 Felt 281",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstAndenIndkomst": {
+				"description": "Anden udenlandsk personlig indkomst. Beløbet udgør udenlandsk personlig indkomst, dog ikke virksomhedsindkomst, når der skal lempes efter: metoden for ny exemption ifølge dobbeltbeskatningsoverenskomst eller creditmetoden ifølge dobbeltbeskatningsoverenskomst eller creditmetoden ifølge LL § 33. Lønnen er udbetalt af arbejdsgiver i Danmark eller gennem en befuldmægtiget her i landet. Felt 287.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstAndenIndkomstFraUdlArbejdsgiver": {
+				"description": "Beløb udgør udenlandsk personlig indkomst (dog ikke virksomhedsindkomst), når der skal lempes efter: metoden for ny exemption ifølge dobbeltbeskatningsoverenskomst eller creditmetoden ifølge dobbeltbeskatningsoverenskomst eller creditmetoden ifølge LL § 33 i tilfælde, hvor lønnen er udbetalt fra udlandet. Anden udenlandsk personlig indkomst fra udenl. arbejdsgiver (AM-pligtig) Felt 282.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstBeløbHalvLempelse": {
+				"description": "Beløbet udgør udenlandsk personlig indkomst omfattet af reglerne om halv lempelse, jf. LL § 33 A, stk. 3, jf. den juridiske vejledning, afsnit C.F.4.2.3, i tilfælde, hvor lønnen er udbetalt fra en arbejdsgiver i Danmark eller gennem en befuldmægtiget her i landet. Felt 294",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstBeløbHalvLempelseAMBidrag": {
+				"description": "Beløbet udgør udenlandsk personlig indkomst omfattet af reglerne om halv lempelse med a conto AM-bidrag Felt 286",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstLønindtægt62d": {
+				"description": "Lønindkomst LL§ 33A (Udenlandsk lønindkomst) Felt: 321",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstAndenIndkomst62d": {
+				"description": "(Anden) Udenlandsk personlig indkomst § 62D Felt: 323",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstBeløbGammelExemption62d": {
+				"description": "Udenlandsk indkomst gl exemption § 62D Felt 325",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstLønindkomstDanskBeskatning": {
+				"description": "Lønindkomst ved arbejde i udlandet, dansk beskatning. Felt 332",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstExemptionSkattepligtigDel": {
+				"description": "Lønindkomst ved arbejde i udlandet, exemption. Felt 333",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPersonligIndkomstBeløbGammelExemption": {
+				"description": "Beløbet udgør udenlandsk personlig indkomst omfattet af reglerne om lempelse efter metoden for gammel exemption med progressionsforbehold. Det gælder uanset om lønmodtageren er omfattet af social sikringslovgivning i Danmark eller i udlandet. Felt 299.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskSkatPersonligIndkomst": {
+				"description": "Felt 586: Udenlandsk skat vedr. felt 282/287 (UDLSKATBLB) I felt 586 indberettes betalt udenlandsk skat (herunder skat betalt til Grønland eller Færøerne) i tilfælde af creditlempelse vedrørende udenlandsk personlig indkomst, jf. forklaring til felterne 282/287.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Soeindkomst": {
+			"x-entityname": "Søindkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "SøindkomstFærøerneGrønland": {
+				"description": "Søindkomst i udenrigsfart, færøerne og grønland Felt 267 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SøindkomstBeløb": {
+				"description": "Søindkomst Felt 272 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "DISIndkomstAndenFart": {
+				"description": "DIS-indkomst udenrigsfart Felt 506 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "DISIndkomstBegrænsetFart": {
+				"description": "DIS-indkomst hvoraf der ikke beregnes søfradrag Felt 508 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "DISIndkomstAntalDISDageAndenFart": {
+				"description": "Antal DIS-dage, anden fart Felt 741 ",
+				"type": "integer",
+				"x-typeDescription": "Positivt heltal, som kan være op til tre cifre langt. Fra 0 til 999",
+				"maximum": 999,
+				"exclusiveMaximum": true,
+				"minimum": 0,
+				"exclusiveMinimum": true
+			  },
+			  "DISIndkomstAntalDISDageBegrænsetFart": {
+				"description": "Antal DIS-dage, begrænset fart Felt 743 ",
+				"type": "integer",
+				"x-typeDescription": "Positivt heltal, som kan være op til tre cifre langt. Fra 0 til 999",
+				"maximum": 999,
+				"exclusiveMaximum": true,
+				"minimum": 0,
+				"exclusiveMinimum": true
+			  },
+			  "DISIndkomstGratialeSkattepligtigDel": {
+				"description": "Skattepligtig del af felt 200 (DIS-indkomst, jubilæumsgratiale og fratrædelsesgodtgørelse)",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "DISIndkomstGruppeSundhedsforsikring": {
+				"description": "Gruppeliv- og sundhedsforsikring, vedr. DIS-indkomst. Felt 368",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "DISIndkomstBegrænsetFartFradrag": {
+				"description": "Fradrag vedr. DISindkomst begrænset fart",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Pensionsydelser": {
+			"x-entityname": "Pensionsydelser",
+			"x-ui-selectable": true,
+			"properties": {
+			  "PensionsydelserATPForskud": {
+				"description": "Pensionen overføres automatisk til Ordinær Forskud på samtlige personer, som vil få udbetalt tillægspension fra ATP. Beløbet kan være positivt eller 0. Felt: 303 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserStatspensionForskud": {
+				"description": "Statslige pensioner som udbetales af Udbetaling Danmark. Udbetaling Danmark udbetaler alle statslige pensioner til tidligere statstjenestemænd, også pensioner til tidligere ansatte i Folketinget. Felt: 309",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserEfterlønForskud": {
+				"description": "Feltet udfyldes med årets efterløn. Beløbet kan kun være positivt eller 0. Felt: 315",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserUdskudtPensionEngangsbeløbForskud": {
+				"description": "”Ventetillæg” indeholder udskudt folkepension, som udbetales som engangsbeløb. Felt 227 Beløbet indgår i personlig og skattepligtige indkomst, men ikke i topskattegrundlaget. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserØvrigPensionForskud": {
+				"description": "Feltet udfyldes med skattepligtsperiodens pension fra kommunale tjenestemandspension, private pensionsordninger med løbende udbetaling og ratepension. Beløbet kan kun være positivt eller 0. Felt: 317",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ArbejdsgiverAdministreretBidragIndskudPåAlderpension": {
+				"description": "Indskud på arbejdsgiveradministreret alderspension, gruppeliv m.v. Felt 347 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "TilbagebetaltEfterlønBetaltFør2002": {
+				"description": "Beløbet udgør bidrag til efterløn og flexydelse som er fradraget før 2002 Felt 355",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "TilbagebetaltEfterlønBetaltEfter2001": {
+				"description": "Beløbet udgør bidrag til efterløn og flexydelse som er fradraget efter 2001 Felt 356",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RatepensionOrdningBidrag": {
+				"description": "Beløbet består af: - Bidrag til privattegnede ratepensioner og ophørende livrenter, hvis du er lønmodtager (højest 100.000 kr., inklusiv bidrag til arbejdsgiveradministrerede ordninger). - Bidrag til ratepensioner og ophørende livrenter, hvis du er selvstændig og bruger reglen om loftet på 100.000 kr. Felt 416 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LivsvarigPensionOrdningBidrag": {
+				"description": "Beløb der udgør: - Indbetalinger til private pensionsordninger med løbende udbetaling, der ikke er ophørende livrenter, når det indbetalte beløb er under 46.000 kroner. - Indbetalinger til private indeksordninger. - Sportsudøveres indbetalinger på særlige, private ratepensionsordninger. - Indbetalinger til pensionsordninger med løbede udbetaling, der ikke er ophørende livrenter, hvis dine samlede indbetalinger i 2011 overstiger 46.000 kroner. - Fradragsfordelingsbeløb, der vedrører indbetalinger i tidligere indkomstår til pensionsordninger med løbende udbetalinger, der ikke er ophørende livrenter. - Fortjeneste ved salg af virksomhed, der er indbetalt på en ratepension eller en pensionsordning med løbende udbetaling (ophørspension), dog højst 2.507.900 kr. - Indbetalinger til privattegnede pensionsordninger med løbende udbetaling, hvis du som selvstændig erhvervsdrivende har valgt at bruge den særlige mulighed, hvor du kan få fradrag for indskud på op til 30 procent af virksomhedens overskud. Det gælder både, når du anvender overgangsreglen for indskud på ratepensioner og ophørende livrenter, og når du anvender reglen ved indskud på pensionsordninger med løbende udbetaling, der ikke er ophørende livrenter. Felt 436.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserÆldrecheck": {
+				"description": "Årsopgørelse: Ældrecheck (COR-felt, indgår også i 204). Felt 1685. Forskudsopgørelse Beløbet for ældre- og mediecheck (supplerende engangsydelse). Felt 234. (FORSKUD-DB: BÆLDRECHECK)",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PensionsydelserSocialPension": {
+				"description": "Feltet omfatter: Alderspension (folkepension), førtidspension og seniorpension, som udbetales af det offentlige. Feltet omfatter ikke: Skattefrie tillæg som efter ansøgning kan udbetales til både alderspensionister og førtidspensionister, da de ikke indgår i den skattepligtige indkomst. Forskudsopgørelse: Felt 305 (FORSKUD-DB: BSOCPEN) Årsopgørelse: Felt 1693 (COR-felt, indgår også i 204)",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "UdenlandskPension": {
+			"x-entityname": "UdenlandskPension",
+			"x-ui-selectable": true,
+			"properties": {
+			  "UdenlandskPensionUdbetalingSærligOrdning": {
+				"description": "Udenlandsk pension fra en særlig ordning. EU/EØS godk af SKAT. Beløbet opsættes maskinelt på grundlag af oplysninger i COR. De udenlandske selskaber skal indberette udbetalt pension og indeholdt dansk A-skat via eIndkomst. Feltet bruges til indberetning af pension fra udenlandske pensionsselskaber mv., hvor der har været fradrag for indbetalingerne på selvangivelserne i Danmark og der skal gives credit for betalt udenlandsk skat. Felt 223.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPensionUdbetalingSærligOrdningExemption": {
+				"description": "Udenlandsk pension (exemp) fra en særlig ordning. EU/EØS godk af SKAT. Beløbet opsættes maskinelt på grundlag af oplysninger i COR. De udenlandske selskaber skal indberette udbetalt pension og indeholdt dansk A-skat via eIndkomst. Felt 225 bruges, når der skal gives exemptionlempelse ved skatteberegningen af pension fra udenlandske pensionsselskaber mv. i et EU eller EØS-land, hvor der har været fradrag for indbetalingerne på selvangivelserne i Danmark. Det gælder de særlige udenlandske pensioner oprettet efter 1. januar 2008, som er godkendt af SKAT. Felt 225.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPensionUdbetalingDanskBeskatning": {
+				"description": "Beløb udgør udenlandsk pension til dansk beskatning. Beløbet ikke indgår i beregningsgrundlaget for AM-bidrag. Beløbet indgår heller ikke i den lempelsesberettigede udenlandske indkomst. Felt 228.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPensionUdbetalingCredit": {
+				"description": "Beløbet udgør udenlandsk pension, når der skal lempes efter: creditmetoden ifølge dobbeltbeskatningsoverenskomst eller creditmetoden ifølge LL § 33, fordi pension ikke er AM-bidragspligtig. Felt 290.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPensionUdbetalingGammelExemption": {
+				"description": "Beløbet udgør udenlandsk pension omfattet af reglerne om lempelse efter metoden for gammel exemption med progressionsforbehold, fordi pension ikke er AM-bidragspligtig. Beløbet indgår ikke i den skattepligtige indkomst, men kun i selve skatteberegningen. Felt 295.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskPensionUdbetalingExemption": {
+				"description": "Beløbet udgør udenlandsk pension exemption. Det er personlig indkomst uden AM-bidrag. Kan ikke forekomme hos begrænset skattepligtige, heller ikke selvom de er grænsegængere. Felt 320.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "SocialeYdelser": {
+			"x-entityname": "SocialeYdelser",
+			"x-ui-selectable": true,
+			"properties": {
+			  "SocialeydelserPraktikydelseMM": {
+				"description": "Kontanthjælp, praktikydelse i forbindelse med skolepraktik, delpension, orlovsydelse, fleksydelse, fleksløntilskud og ledighedsydelse fra det offentlige. Beløbet kan kun være positivt eller 0. Felt 216",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SocialeYdelserDagpengeForskud": {
+				"description": "Feltet udfyldes med skattepligtsperiodens syge- og arbejdsløshedsdagpenge. Beløbet kan kun være positivt eller 0. Felt: 304",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SocialeYdelserSUForskud": {
+				"description": "Stipendier fra SU. Felt 306 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SocialeYdelserSygedagpengeBeløb": {
+				"description": "Sygedagpenge, B-indkomst. Felt: 363",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ArbejdsgiverAdministreretBidragRatepension": {
+				"description": "null",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  }
+			}
+		  },
+		  "OevrigeYdelser": {
+			"x-entityname": "ØvrigeYdelser",
+			"x-ui-selectable": true,
+			"properties": {
+			  "JubilæumsGratialeFratrædelsesGodtgørelseSkattepligtigDel": {
+				"description": "Skattepligtig del af jubilæumsgratiale pgf 7u (Felt: 243). Felt: 1806",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "JubilæumsGratialeFratrædelsesGodtgørelseTingsgaver": {
+				"description": "TINGSGAVER VEDR. JUBILÆUMSGRATIALE PGF 7U",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ØvrigeYdelserPensionslignendeYdelser": {
+				"description": "Udfyldes med pensionslignende ydelser fra tidligere arbejdsgiver, hvorfra personen er gået på pension. Felt 311",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "BeregnetPersonligIndkomst": {
+			"x-entityname": "BeregnetPersonligIndkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "BeregnetPersonligIndkomstUnderskudTilFremførsel": {
+				"description": "Underskud i personlig indkomst til fremførsel Felt: 455",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUnderskudTilModregningAM": {
+				"description": "Underskud for 2014 til 2018 til modregning i AM-bidragsgrundlag Felt 467 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstBeløbUdenFuldSkattepligt": {
+				"description": "Personlig indkomst i perioden uden fuld skattepligt Felt 818 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUnderskudOverførtTilÆgtefællePersonligIndkomst": {
+				"description": "Årets underskud i personlig indkomst overført til modregning i ægtefællens personlige indkomst Felt 1464 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUnderskudOverførtFraÆgtefælle": {
+				"description": "Summen af ægtefælles underskud i personlig indkomst modregnet i egen personlig indkomst Felt 1459 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUdnyttetUnderskud": {
+				"description": "UDNYTTET UNDERSKUD I PERSONLIG INDKOMST FOR TIDLIGERE ÅR",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUdnyttetUnderskudOverførtTilÆgtefælle": {
+				"description": "Udnyttet underskud fra tidligere år overført til ægtefælle",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUdnyttetUnderskudOverførtFraÆgtefælle": {
+				"description": "Modregning af ægtefælles negative personlige indkomst i egen personlige indkomst fra tidligere år.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "BeregnetPersonligIndkomstUnderskudOverførtTilÆgtefælleKapitalIndkomst": {
+				"description": "Årets underskud i personlig indkomst overført til modregning i ægtefællens kapitalindkomst Felt 1469 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetPersonligIndkomstUnderskudTidligereÅrOverførtTilÆgtefælleKapitalIndkomst": {
+				"description": "Modregning af ægtefælles negative personlige indkomst i egen kapitalindkomst fra tidligere år.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "BeregnetPersonligIndkomstTotal": {
+				"description": "Beregningsmæssig personlig indkomst",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "FradragIPersonligIndkomst": {
+			"x-entityname": "FradragIPersonligIndkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "PersonligIndkomstFradragØvrigeFradrag": {
+				"description": "Beløb der udgør fradragsberettigede udgifter til erhvervsmæssig befordring, som er omtalt i vejledningen Få godtgørelse eller fradrag for din erhvervsmæssige kørsel. Felt 425.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFradragIndskudPåIværksætterKonto": {
+				"description": "Beløb der udgør årets samlede indskud på den særlige iværksætterkonto. Felt 426",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFradragGæsteStuderendeBegyndtFør2011": {
+				"description": "Beløbet i rubrikken skal omfatte: - Fradrag på op til 71.000 kr., hvis personen er begyndt at studere i Danmark før 1.1. 2011. Beløbet skal i nogle situationer reduceres (læs om reglerne i vejledningen Fritagelse for beskatning for gæstestuderende). - Beløbet må ikke være større end den personlige indkomst, herunder lønindkomsten i rubrik 10. Fradraget gives forholdsmæssigt for den del af året man er gæstestuderende her i landet. Felt 491.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFradragGæsteStuderendeBegyndtEfter2010": {
+				"description": "Beløbet i rubrikken skal omfatte: - En gæstestuderendes indkomst på op til 42.900 kr. fra arbejde i Danmark, hvis personen er begyndt at studere i Danmark i 2011. Beløbet skal i nogle situationer reduceres (læs om reglerne i vejledningen Fritagelse for beskatning for gæstestuderende). Felt 437. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFradragUdenlandskeSocialeBidrag": {
+				"description": "Fradrag for udenlandske obligatoriske sociale bidrag. Beløbet er fradrag i den personlige indkomst, der skal fragå i den udenlandske indkomst, men først efter evt. AM-bidraget er fratrukket, Felt 459.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstFradragTilbagebetaltKontanthjælp": {
+				"description": "Beløbet består af: - Kontanthjælp, der er udbetalt fra og med 1994 til og med 2010 og tilbagebetalt i 2011. - Introduktionsydelse, der er udbetalt i 2010 eller tidligere og tilbagebetalt i 2011 Felt 477.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "PersonligIndkomstKapitalafkastAktierAnparter": {
+				"description": "Beløb der udgør kapitalafkast af aktier og anparter ved erhvervelse af virksomhed. Rubrik: 162 Felt: 835",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "AMBidrag": {
+			"x-entityname": "AMBidrag",
+			"x-ui-selectable": true,
+			"properties": {
+			  "AMBidragDanskRentekorrektion": {
+				"description": "AM-bidrag af dansk rentekorrektion. Felt 1717",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragUdenlandskRentekorrektion": {
+				"description": "AM-bidrag af udenlandsk rentekorrektion. Felt 1718",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBeløbLøn": {
+				"description": "AM-bidrag af løn , dagpenge, pension m.v. Felt 1782 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBeløbBIndkomstOgHonorarer": {
+				"description": "AM-bidrag af B-indkomst og honorarer Felt 1783 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragMedarbejdendeÆgtefælleIndkomst": {
+				"description": "AM-bidrag af indkomst som medarbejdende ægtefælle. Felt: 1716 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBeløbVirksomhedsresultat": {
+				"description": "AM-bidrag af virksomhedsresultat. Felt: 1785 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBeløbVirksomhedsresultatUdenlandsk": {
+				"description": "Arbejdsmarkedsbidrag af udenlandsk virksomhed",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBeløbAconto": {
+				"description": "AM-bidrag af aconto indkomster.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AMBidragBiblioteksafgiftGodtgørelse": {
+				"description": "AM-bidrag af godtgørelse af biblioteksafgifter. Felt 1723",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "IndeholdtAMBidragTotal": {
+				"description": "null",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  }
+			}
+		  },
+		  "Kapitalindkomst": {
+			"x-entityname": "Kapitalindkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "KapitalIndkomstAndenKapitalIndkomst": {
+				"description": "Beløb der udgør gevinst og tab ved salg af pantebreve og fordringer, der ikke er obligationer, hvis de er købt 27. januar 2010 eller senere, gevinst ved salg af pantebreve og fordringer i danske kroner, der ikke er obligationer, hvis de er købt før 27. januar 2010 og ikke opfyldte mindsterentekravet på udstedelsestidspunktet, gevinst og tab på fordringer og gæld i udenlandsk valuta, nettorenteindtægt af pantebreve, hvis de både er købt og solgt igen i 2011, renteindtægter af pantebreve, der ikke er i depot, fratrukket et evt. vederlag for renter betalt ved køb af pantebrevene i 2011, gevinst ved ekstraordinær indfrielse af kontantlån og nettofortjeneste (positivt resultat efter fradrag af tab i 2011 og fremført tab fra tidligere år) af gevinst på finansielle kontrakter og strukturerede obligationer og fortjeneste ved salg af fast ejendom eller afkast på livsforsikringer og lignende. Rubrik: 39 Felt: 214",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstNettoLejeIndtægt": {
+				"description": "Indtægter ved udlejning af fast ejendom er som hovedregel skattepligtige. I visse tilfælde er indtægten dog skattefri, når den er under et vist beløb. Rubrik: 37 Felt: 218",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstRenteIndtægt": {
+				"description": "Renteindtægter er kapitalindkomst og skal indgå i selvangivelsen og årsopgørelsen. Renter beskattes i det år, hvor de forfalder til betaling, uanset om renterne hæves eller ej. Rubrik: 31 Felt: 233",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstGevinstTabAktierBevisInvesteringsSelskab": {
+				"description": "Beløbet i rubrikken skal omfatte: - Realiserede og urealiserede gevinster og tab på aktier og investeringsforeningsbeviser, der er udstedt af et investeringsselskab. Rubrik: 38 Felt: 239 NB! Dette felt er fra 2021 delt op i tre, og erstattes af felterne: KapitalIndkomstGevinstTabAktierBevisInvesteringsSelskabIkkeAktiebaseret (239) AktieIndkomstGevinstTabDanskeAktierBevisInvesteringsSelskab (345) AktieIndkomstGevinstTabUdenlandskeAktierBevisInvesteringsSelskab (375)",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstUdbytteUdlodningInvesteringsForening": {
+				"description": "Beløbet i rubrikken skal omfatte: Udlodningsandele, der er kapitalindkomst, hvor der er trukket udbytteskat, fra: - Danske minimumsudloddende blandet investerende investeringsforeninger (fx aktier og obligationer). - Danske minimumsudloddende aktiebaserede investeringsforeninger. - Danske investeringsforeninger, hvor hele udlodningen er kapitalindkomst. Rubrik: 34 Felt: 247",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstReserveFondsUdlodningVærdiStigning": {
+				"description": "Beløb der udgør: - Reservefondsudlodninger fra danske realkreditinstitutter. - Kapitalværdistigninger af danske kapitalforsikringer, hvor forsikringsbegivenheden (dødsfald, opnået alder eller lignende) er indtrådt, men udbetalingen sker ratevis eller er udskudt. - Når du indfrier gamle lån ved at få udbetalt reservefondsandele: 2/3 af det beløb, udlodningen overstiger det oprindelige indskud med. Det gælder, uanset om du får udlodningen udbetalt kontant, eller om du anvender beløbet helt eller delvis som indskud til reservefond i et nyt lån. - Når du får en reservefondsudlodning ved ekstraordinært at afskrive på restgælden, uden at det har forbindelse med indfrielsen af lånet: 2/3 af det beløb, du får udloddet fra reservefonden. Rubrik: 33 Felt: 249",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstGevinstTabObligationerMarked": {
+				"description": "Beløbet i rubrikken skal omfatte: - Gevinst og tab på obligationer i danske kroner, som du har købt efter den 26. januar 2010. Har du købt dem den 1. januar 2011 eller senere, kan du kun trække tab fra, hvis SKAT har fået oplysninger om købet. - Gevinst og tab på obligationer i fremmed valuta. Har du købt dem den 1. januar 2011 eller senere, kan du kun trække tab fra, hvis SKAT har fået oplysninger om købet. - Gevinst på obligationer i danske kroner købt inden 27. januar 2010, som ikke opfyldte mindsterentekravet på udstedelsestidspunktet. Du kan ikke trække tab fra. - Gevinst og tab på visse strukturerede obligationer i fremmed valuta, som ikke beskattes som finansielle kontrakter. - Gevinst og visse tab på visse strukturerede obligationer i danske kroner, der ikke beskattes som finansielle kontrakter. Du kan ikke trække tab fra, hvis du har købt obligationerne før den 27. januar 2010. Rubrik: 32 Felt: 327",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstGevinstTabObligationerEjMarked": {
+				"description": "Beløbet i rubrikken skal omfatte: - Gevinst og tab på obligationer i danske kroner, som du har købt den 27. januar 2010 eller senere. - Gevinst og tab på obligationer i fremmed valuta. - Gevinst på obligationer i danske kroner købt inden 27. januar 2010, som ikke opfyldte mindsterentekravet om en rente på 2,5 procent på udstedelsestidspunktet. Du kan ikke trække tab fra. - Gevinst og tab på visse strukturerede obligationer i fremmed valuta, som ikke beskattes som finansielle kontrakter. - Gevinst og tab på visse strukturerede obligationer i danske kroner, som ikke beskattes som finansielle kontrakter. Dog kan du ikke trække tab fra, hvis du har købt obligationerne før den 27. januar 2010. Rubrik: 40 Felt: 328",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstGevinstTabObligationerInvesteringForening": {
+				"description": "Beløbet i rubrikken skal omfatte: -Gevinster og tab på investeringsbeviser i minimumsudloddende obligationsbaserede investeringsforeninger. Rubrik: 115 Felt: 330",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstFinansielleKontrakter": {
+				"description": "Beløb der udgør: - Indkomst vedr. finansielle kontrakter. Rubrik: 346 Felt: 346",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstGevinstTabAktierBevisInvesteringsSelskabIkkeAktiebaseret": {
+				"description": "Gevinst/tab på aktier/beviser i obligationsbaserede investeringsselskaber Felt 239 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalIndkomstTotal": {
+				"description": "Beløb, der udgør summen af den samlede kapitalindkomst. Kapitalindkomst er indtægt via renter og investeringer. Kapitalindkomsten kan være positiv eller negativ afhængigt af, om der er overskud eller underskud på investeringerne.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "UdenlandskKapitalindkomst": {
+			"x-entityname": "UdenlandskKapitalindkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "UdenlandskKapitalIndkomstBeløbGammelExemption": {
+				"description": " Beløbet udgør den udenlandske kapitalindkomst, såfremt denne ifølge en dobbeltbeskatningsoverenskomst er omfattet af reglerne om gammel exemption. Det indberettede beløb indgår ikke i den skattepligtige indkomst, men kun i skatte- og lempelsesberegningen. Felt 285",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskKapitalIndkomstBeløb": {
+				"description": "Beløbet udgør: 1. Udenlandsk kapitalindkomst som er omfattet af creditreglen i LL § 33 eller af en dobbeltbeskatningsoverenskomst, der følger denne regel. 2. Udenlandsk kapitalindkomst som ifølge en dobbeltbeskatningsoverenskomst er omfattet af reglerne om ny exemption. 3. Udenlandsk kapitalindkomst, der ikke er lempelsesberettiget. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskKapitalIndkomstVirksomhedSkattepligtigDel": {
+				"description": "Udenlandsk kapitalindkomst til dansk beskatning. Felt 26",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskSkatKapitalIndkomst": {
+				"description": "Felt 588: Udenlandsk skat vedr. felt 298 (UDLKAPSKATBLB) I felt 588 indberettes betalt udenlandsk skat (herunder skat betalt til Grønland eller Færøerne) i tilfælde af creditlempelse vedrørende udenlandsk kapitalindkomst, jf. forklaringen til felt 298. Hvis der er indberettet udbytte fra udenlandske aktier i dansk depot, hvor udbyttet er kapitalindkomst, vil udbyttet blive opsat i felt 298 med udbytteskat i felt 588. Hvis der er en DBO med landet med en fast pro-centsats, vil der max blive opsat den udbytteskat, der må gives efter DBO'en.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "BeregnetKapitalIndkomst": {
+			"x-entityname": "BeregnetKapitalIndkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "BeregnetKapitalIndkomstBeløbUdenFuldSkattepligt": {
+				"description": "Kapitalindkomst i perioden uden fuld skattepligt Felt 819 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetKapitalIndkomstPersonligIndkomstUnderskudOverførtFraÆgtefælle": {
+				"description": "Summen af ægtefælles underskud i personlig indkomst modregnet i egen kapitalindkomst Felt 1474 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetKapitalIndkomstPersonligIndkomstUnderskudTidligereÅrOverførtFraÆgtefælle": {
+				"description": "Modregning af ægtefælles negative personlige indkomst i egen kapitalindkomst fra tidligere år.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "BeregnetKapitalIndkomstPersonligIndkomstUnderskud": {
+				"description": "Årets underskud i personlig indkomst modregnet i egen kapitalindkomst Felt 1419 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetKapitalIndkomstPersonligIndkomstUnderskudFraTidligereÅr": {
+				"description": "Tidligere underskud i personlig indkomst modregnet i egen kapitalindkomst Felt 1424 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BeregnetKapitalIndkomstKapitalIndkomstUnderskudOverførtFraÆgtefælle": {
+				"description": "Modregning vedr. bundskat af ægtefælles negative kapitalindkomst i egen kapitalindkomst - Modtager.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "BeregnetKapitalIndkomstTilÆgtefælle": {
+				"description": "Modregning vedr. topskat af ægtefælles negative kapitalindkomst i egen kapitalindkomst - Afgiver.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "BeregnetKapitalIndkomstTotal": {
+				"description": "BEREGNINGSMÆSSIG KAPITALINDKOMST",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "FradragIKapitalindkomst": {
+			"x-entityname": "FradragIKapitalindkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "RenteudgiftAndreDanskeForbrugslån": {
+				"description": "Beløbet udgør renteudgifter, der vedrører danske forbrugslån. Feltet kan alene indberettes for grænsegængere omfattet af KSL afsnit 1A. Felt: 408 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftPengeinstitut": {
+				"description": "Renteudgifter vedr. realkreditinstitut kan kun trækkes fra i det omfang, de vedrører aktiver, hvoraf indtægter er skattepligtige, dvs. fast ejendom, båndlagt kapital og erhvervsaktiver. Rubrik: 42 Felt: 481",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftRealkreditinstitut": {
+				"description": "Renteudgifter kan kun trækkes fra i det omfang, de vedrørende aktiver, hvoraf indtægter er skattepligtige, dvs. fast ejendom, båndlagt kapital og erhvervsaktiver. Rubrik: 41 Felt: 483",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftAndenGældSU": {
+				"description": "Beløbet i rubrikken skal omfatte: - Renter af statsgaranterede studielån i et pengeinstitut - Renteudgifter af pantebreve, der ikke er i depot - Renteudgifter af øvrig gæld til private - Udgifter til stiftelsesprovisioner - Andre renteudgifter, som giver ret til fradrag, og som SKAT ikke automatisk får oplyst Rubrik: 44 Felt: 485",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftStudielån": {
+				"description": "Beløb der udgør renteudgifter af studielån fra Økonomistyrelsen Rubrik: 43 Felt: 489",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftAndenUdenlandskGæld": {
+				"description": "Feltet kan alene indberettes for grænsegængere omfattet af KSL, afsnit 1A. I feltet indberettes skatteyders udenlandske renteudgifter af privat gæld reduceret med eventuelle udenlandske renteindtægter. Felt 402 Rubrik 464 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "RenteudgiftUdenlandskEjendom": {
+				"description": "Feltet kan alene indberettes for grænsegængere omfattet af KSL, afsnit 1A. Feltet skal udfyldes med renteudgifter af gæld, der vedrører den udenlandske ejendom. Fradrag for renteudgifter fordrer, at gælden vedrører ejendommen. Såfremt lånet ikke vedrører ejendommen, kan der evt. i stedet gives fradrag for renteudgifterne som \"andre private renteudgifter\". Se forklaring til felt 402 - Andre udenlandske private nettorenteudgifter. Fradrag for renteudgifter forudsætter endvidere, at den faste ejendom af ejeren selv anvendes til hel eller delårsbeboelse. Der er kun adgang til at fratrække renteudgifterne ved den danske indkomstopgørelse i det omfang, renteudgifterne overstiger indtægterne fra ejendommen. Dvs. at af det beløb, der indberettes i felt 407, er der alene fradrag for den del, der overstiger beløbet indberettet i felt 248 (overskud af udenlandsk ejendom). Systemet opgør automatisk det beløb, der skal indgå i kapitalindkomsten og dermed i skattepligtig indkomst. For gifte skal renteudgifterne fratrækkes hos den af ægtefællerne, der hæfter for rentebetalingerne. I de tilfælde, hvor grænsegængeren hæfter for rentebetalingerne, mens ægtefællen har rådighed over ejendommen, vil indtægterne skulle reducere den fradragsberettigede renteudgift. I disse tilfælde skal SC indberette såvel indtægter som renteudgifter hos grænsegængeren.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Aktieindkomst": {
+			"x-entityname": "Aktieindkomst",
+			"x-ui-selectable": true,
+			"properties": {
+			  "EjReguleretUdbytteDanskDepot": {
+				"description": "Udbyttet af danske aktier, ikke optaget til handel på reguleret marked TA20-18 Felt 310",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretGevinstDansk": {
+				"description": "Gevinst eller tab på aktier ikke optaget på et reguleret marked TA20-21 Felt 312 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretUdbytteDansk": {
+				"description": "Udbytte af danske aktier ikke optaget på reg. Marked TA20-19 Felt 316",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretUdbytteUdenlandsk": {
+				"description": "Udenlandske lempelsesberettigede unoterede aktier TA20-20 Felt 313",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretGevinstUdenlandsk": {
+				"description": "Udenlandske andre unoterede aktier TA20-22 Felt 314",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretTab2002-2005": {
+				"description": "Tab på unoterede aktier fra 2002-2005 TA20-23 Felt 890",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretUdbytteDanskDepot": {
+				"description": "Udbytte af danske aktier optaget til handel på et reguleret marked TA20-1 Felt 501",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretGevinstDansk": {
+				"description": "Gevinst eller tab på danske aktier på reguleret marked TA20-5 Felt  502 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretUdbytteDansk": {
+				"description": "Udbytte af danske aktier optaget til handel på et reguleret marked. TA20-2  Felt 505",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretUdbytteUdenlandsk": {
+				"description": "Udenlandsk aktieindkomst uden lempelse TA20-4  Felt 503 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretGevinstUdenlandsk": {
+				"description": "Anden udenlandsk aktieindkomst TA20-6 Felt  504 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretUdbytteUdenlandskDepot": {
+				"description": "Udbytte af udenlandske aktier optaget til handel på et reguleret marked. TA20-3  Felt 509",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretUdbytteUdenUdbytteskat": {
+				"description": "Dansk aktie udbytte uden indeholdt udbytteskat TA20-5-1 Felt 624 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretTab2002-0000": {
+				"description": "Tab på noterede aktier fra 2002-slutår - 1. TA20-10 Felt 849",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AktierSpecifikationUdbytteBegrænsetSkattepligtig": {
+				"description": "Aktieudbytte uden indeholdt udbytteskat Felt: 559",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AktieIndkomstGevinstTabDanskeAktierBevisInvesteringsSelskab": {
+				"description": "Gevinst/tab på aktier/beviser i aktiebaserede investeringsselskaber. Felt 345",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AktieIndkomstGevinstTabUdenlandskeAktierBevisInvesteringsSelskab": {
+				"description": "Gevinst/tab på udenlandske aktier/beviser i aktiebaserede investeringsselskaber. Felt 375",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskSkatUdbytteskatLempelse": {
+				"description": "Felt 540: Udenlandsk udbytteskat (UDLDBOAKTSKABLB) Felt 540 er automatisk opsat og beregnet som summen af de udenlandske udbytteskatter, der skal indgå i lempelsesberegningen for udbytte af de udbytter, der indgår i den forprintede rubrik 63 (= felt 509 \"Udbytte af udenlandske aktier optaget til handel på et reguleret marked, i dansk depot indberettet til SKAT\"). Det er den indberettede udbytteskat, der indgår i felt 540. Der indgår dog ikke mere, end hvad der svarer til den procent, som det enkelte kildeland har ret til efter DBO. For eksempel er procenten 15 for Norge, Sverige og Finland, jf. i øvrigt den juridiske vejledning, afsnit C.F.8.2.2.10.3.2 (artikel 10 om udbytter).",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "SelvstaendigVirksomhed": {
+			"x-entityname": "SelvstændigVirksomhed",
+			"x-ui-selectable": true,
+			"properties": {
+			  "SelvstændigVirksomhedAndenKapitalindkomst": {
+				"description": "Beløb der udgør anden kapitalindkomst i virksomhed, fx kursgevinster og tab på finansielle kontrakter, oligationer og andre fordringer, investeringsselskaber, samt lagerforskydninger og udenlandske fordringer/gæld og valuta. Felt 213",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedOverskud": {
+				"description": "Beløb der udgør årets overskud før renteindtægter og renteudgifter. Felt 221.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedUnderskud": {
+				"description": "Beløb der udgør underskud af selvstændig virksomhed før renter. Felt 435.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedBiblioteksafgift": {
+				"description": "Ydelser vedrørende lov om biblioteksafgift Felt 331",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedBiblioteksafgiftGodtgørelse": {
+				"description": "Beløbet udgør 8,7% af beløbet i felt 331 /rubrik 133. Beløbet bliver automatisk beregnet. Godtgørelse vedrørende biblioteksafgift med videre Felt 232.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedRenteindtægt": {
+				"description": "Beløbet udgør renteindtægter i virksomheden Felt 237.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedRenteudgift": {
+				"description": "Beløb der udgør virksomhedens samlede renteudgifter. Felt 488.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedFradragMedarbejdendeÆgtefælle": {
+				"description": "Beløb der udgør den del af virksomhedsoverskuddet, der skal overføres til beskatning hos medarbejdende ægtefælle. Felt 473.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SelvstændigVirksomhedUnderskudModregnKapitalIndkomst": {
+				"description": "Operationelt beregningfelt, som indeholder SelvstændigVirksomhedUnderskud efter modregning i kapitalindkomst. Felt 1799",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "UdenlandskSelvstaendigVirksomhed": {
+			"x-entityname": "UdenlandskSelvstændigVirksomhed",
+			"x-ui-selectable": true,
+			"properties": {
+			  "UdenlandskSelvstændigVirksomhedOverskud": {
+				"description": "Beløb udgør over-/underskud af udenlandsk indkomst som er lempelsesberettiget Felt 296.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "UdenlandskSelvstændigVirksomhedNettoRenter": {
+				"description": "Feltet indberettes med renteindtægter og udgifter i udenlandsk virksomhed, som er lempelsesberettiget. Nettorenter skal, når den udenlandske virksomhed ikke er lempelsesberettiget, indberettes i felt 237/488. Hvis beløbet er negativt, skal det indberettes med minus fortegn. Hvis indkomsten er omfattet af creditlempelse, skal der også indberettes i felt 589 (\"Udenlandsk skat vedrørende felt 296 og felt 297\"). Felt 297.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Skibsvirksomhed": {
+			"x-entityname": "Skibsvirksomhed",
+			"x-ui-selectable": true,
+			"properties": {
+			  "SkibsvirksomhedOverskud": {
+				"description": "Beløb der udgør over- eller underskud ved skibsanparter i et godkendt skibsprojekt (underskud angives med minus), over- eller underskud ved skibsanparter anskaffet før 12. maj 1989 (underskud angives med minus) og overskud ved anparter der er anskaffet 12. maj 1989 eller senere og overskud ved anden anpartsvirksomhed Rubrik: 35 Felt: 217",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "SkibsvirksomhedOverskudOphørt": {
+				"description": "Beløbet skal bestå af: - Fortjeneste ved salg af anparter eller ophør eller afståelse af anpartsvirksomheden, hvis virksomheden er omfattet af anpartsreglerne på det tidspunkt, hvor fortjenesten bliver konstateret. - Tab ved ophør af skibsvirksomheden, når: -- virksomheden var et bierhverv for dig, og du har købt anparterne før 12. maj 1989. -- Skibet var godkendt af Økonomi- og Erhvervsministeriet (godkendt skibsprojekt). Rubrik: 36 Felt: 254",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Kapitalafkastordning": {
+			"x-entityname": "Kapitalafkastordning",
+			"x-ui-selectable": true,
+			"properties": {
+			  "KapitalafkastOrdningVirksomhedsbeskatningKonjunkturUdenlandsk": {
+				"description": "Beløb der udgør indkomst til konjunkturudligning. Op til 25 % af positiv personlig indkomst fra virksomheden. Beløbet skal udgøre mindst 5.000 kr. Felt 289 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalafkastOrdningUdenlandskKapitalafkast": {
+				"description": "Udenlandsk kapitalafkast, kapitalafkastordning. Felt 418",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalafkastOrdningKapitalafkast": {
+				"description": "Kapitalafkast i kapitalafkastordning. Felt 440.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KapitalafkastOrdningVirksomhedsbeskatningKonjunktur": {
+				"description": "Beløb der udgør indkomst til konjunkturudligning. Op til 25 % af positiv personlig indkomst fra virksomheden. Beløbet skal udgøre mindst 5.000 kr. Felt 445 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "VirksomhedOrdning": {
+			"x-entityname": "VirksomhedOrdning",
+			"x-ui-selectable": true,
+			"properties": {
+			  "VirksomhedOrdningRentekorrektion": {
+				"description": "Beløbet udgør rentekorrektion i dansk virksomhed. Virksomhedsordningen skal være valgt. Felt: 280 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningRentekorrektionUdenlandsk": {
+				"description": "Beløbet udgør rentekorrektion i dansk virksomhed. Virksomhedsordningen skal være valgt. Felt 292 for UdenlandskSelvstændigVirksomhed ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningIndkomstTilVirksomhedsbeskatning": {
+				"description": " Beløb der udgør indkomst til beskatning efter reglerne i virksomhedsordningen (årets opsparede overskud tillagt virksomhedsskat). Beløbet skal omfatte: - Årets opsparede beløb tillagt virksomhedsskat Felt 434 for SelvstændigVirksomhed Felt 291 for UdenlandskSelvstændigVirksomhed ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningIndkomstTilVirksomhedsbeskatningUdenlandsk": {
+				"description": "Beløb der udgør indkomst til beskatning efter reglerne i virksomhedsordningen (årets opsparede overskud tillagt virksomhedsskat). Beløbet skal omfatte: - Årets opsparede beløb tillagt virksomhedsskat Felt 291. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningUdenlandskKapitalafkast": {
+				"description": "Udenlandsk kapitalafkast (virksomhedsordningen) Beløb udgør udenlandsk kapitalafkast der hidrører fra over- /underskud i udenlandsk virksomhed, og som er lempelsesberettiget. Felt 415 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningKapitalafkast": {
+				"description": "Kapitalafkast fra dansk virksomhed. Felt 432.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningKapitalafkastTilÆgtefælle": {
+				"description": "Kapitalafkast overført til ægtefælle i virksomhedsordning. Felt 431",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "VirksomhedOrdningKapitalafkastFraÆgtefælle": {
+				"description": "Kapitalafkast fra ægtefælle efter virksomhedsordningen. Felt 1249",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "KunstnerOrdning": {
+			"x-entityname": "KunstnerOrdning",
+			"x-ui-selectable": true,
+			"properties": {
+			  "KunstnerOrdningBeløbOverførtFraKonto22Pct": {
+				"description": "Overført fra konto for kunstnere 22% Felt 471 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerOrdningBeløbOverførtFraKonto23HalvPct": {
+				"description": "Overført fra konto for udligning for kunstnere 23,5% Felt: 465",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerOrdningBeløbOverførtFraKonto24halvPct": {
+				"description": "Overført fra konto for udligning for kunstnere 24,5% Felt: 241",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerOrdningBeløbOverførtFraKonto25Pct": {
+				"description": "Overført fra konto for udligning for kunstnere 25% Felt: 203",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerOrdningIndkomstTilBeskatning": {
+				"description": "Indkomst til beskatning efter udligningsordningen for kunstnere. Beløbet udgør honorarmodtageres henlæggelse efter reglerne i indkomstudligningsordningen for kunstnere, jf. VSL § 22 d. Beløbet skal mindst udgøre 5.000 kr. og må ikke overstige summen af beløb i felt 207, felt 210 og skattepligtig del af felt 260 (efter AM-bidrag) samt felt 229. Felt 422.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "KunstnerVirksomhedOrdning": {
+			"x-entityname": "KunstnerVirksomhedOrdning",
+			"x-ui-selectable": true,
+			"properties": {
+			  "KunstnerVirksomhedOrdningBeløbOverførtFraKonto22Pct": {
+				"description": "Overført fra konto for udligning for kunstnere i virksomhed 22% Felt 468 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerVirksomhedOrdningBeløbOverførtFraKonto23HalvPct": {
+				"description": "Overført fra konto for udligning for kunstnere i virksomhed 23,5 %. Felt: 466",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerVirksomhedOrdningBeløbOverførtFraKonto24halvPct": {
+				"description": "Overført fra konto for udligning for kunstnere i virksomhed 24,5 %. Felt: 169 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerVirksomhedOrdningBeløbOverførtFraKonto25Pct": {
+				"description": "Overført fra konto for udligning for kunstnere i virksomhed 25% Felt 209",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "KunstnerVirksomhedOrdningIndkomstTilBeskatning": {
+				"description": "Indkomst til beskatning efter udligningsordningen for kunstnere i virksomhed. Beløbet udgør henlæggelsen efter reglerne i indkomstudligningsordningen for kunstnere, jf. virksomhedsskattelovens § 22 d. Beløbet skal være mindst 5.000 kr. Felt 424.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "LigningsmaessigtFradrag": {
+			"x-entityname": "LigningsmæssigtFradrag",
+			"x-ui-selectable": true,
+			"properties": {
+			  "LigningsmæssigtFradragUdgifterServiceFradrag": {
+				"description": "Beløbet omfatter udgifter til arbejdsløn for serviceydelser og håndværksydelser på op til maksimumfradrag (inkl. eventuel moms). Grundbeløb i 2010-niveau 5.400 kr. (serviceydelser) og 10.900 kr. (håndværksydelser). Fradragsgrænsen reguleres årligt. Rubrik: 460 Felt: 460",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragUnderholdsBidragBørneBidrag": {
+				"description": "Beløbet i rubrikken skal indeholde dine fradragsberettigede udgifter til: - Børnebidrag - Underholdsbidrag (til tidligere ægtefælle) - Aftægtsforpligtelse og underholdsydelser. Rubrik: 56 Felt: 411",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragGaverForeninger": {
+				"description": "Beløbet i rubrikken omfatter beløb, som SKAT har modtaget oplysning om fra almennyttige foreninger, stiftelser og institutioner, der er godkendte til at modtage gaver med fradragsret for giveren. Rubrik: 55 Felt: 412",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "BefordringsFradragBeløb": {
+				"description": "Felt 417: Befordring (BFOHJMARBBLB) Beløb, der udgør udgifter til befordring mellem hjem og arbejdsplads.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragRejseUdgifter": {
+				"description": "Beløbet i rubrikken skal omfatte udgifter til logi, kost og småfornødenheder, som ikke er dækket af skattefri rejsegodtgørelse (Grundbeløb i 2010-niveau 25.000 kr. - reguleres årligt). Rubrik: 53 Felt: 429 Rejseudgifter som vedrører den udenlandske indkomst skal oplyses i rubrik 442.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragKontingentVirksomhed": {
+				"description": "Beløb der udgør betalt kontingent til arbejdsgiverforening, betalt kontingent til fagforening, hvor medlemskabet er i egenskab af, at man driver virksomhed og værdien af gaver givet til godkendte kulturinstitutioner. Rubrik: 118 Felt: 438",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragAkasse": {
+				"description": "Beløbet omfatter: - Udgifter til arbejdsløshedsforsikring i en A-kasse - Bidrag til efterløns- og fleksydelsesordningen - Bidrag til en privattegnet arbejdsløshedsforsikring, hvis forsikringsselskabet skal indberette indbetalte bidrag. Rubrik: 52 Felt: 439",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragØvrigeLønmodtagerUdgifter": {
+				"description": "Fradrag for øvrige lønmodtagerudgifter der vedrører dansk indkomst, som ikke er specificeret i rubrik 51, 52, 54 og 59. Kun den del af udgifterne som overstiger bundgrænsen er med i beløbet (Grundbeløb i 2010-niveau 5.500 kr. - bundgrænsen reguleres årligt). Rubrik: 58 Felt: 449 Fradrag for øvrige lønmodtagerudgifter der vedrører udenlandsk indkomst, som ikke er specificeret i rubrik 440, 441, 442. Rubrik: 446 Hvis der samtidig med øvrige lønmodtagerudgifter for dansk indkomst, er lønmodtagerudgifter vedrørende udenlandsk indkomst, der er omfattet af bundgrænsen, skal bundgrænsen først og fremmest modregnes i fradraget i den udenlandske indkomst. Der skal ikke modregnes bundgrænse begge steder. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragSøfradrag": {
+				"description": "FRADRAG I UDENRIGSFART FOR SØMÆND Felt 450",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragDISFradragAndenFart": {
+				"description": "FRADRAG I DIS-INDKOMST Felt 453",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragFagligtKontingent": {
+				"description": "Dansk fagligt kontingent er udskilt fra felt 439, som herefter alene består af bidrag til A-kasse, efterlønsordning og fleksydelse. Fagligt kontingent placeres i et selvstændigt felt 458 som ligningsmæssigt fradrag (fra og med indkomståret 2015 er fradrag begrænset til 6.000 kr.). Det hidtidige heraf-felt 570 til felt 439 fortsætter som et felt alene til brug i forhold til udenlandsk indkomst (lempelses- og underskudsformål som hidtil). Rubrik: 50 Felt: 458 Fagligt kontingent som vedrører den udenlandske indkomst og som er betalt i udlandet skal oplyses i rubrik 440. ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ServicefradragAngivelseBeløb": {
+				"description": "Det angivne servicefradrag.",
+				"type": "integer",
+				"x-typeDescription": "Datatype som standard integer dvs. indeholdende værdier fra -2.147.483.647 til 2.147.483.647.",
+				"maximum": 2147483647,
+				"exclusiveMaximum": false,
+				"minimum": -2147483647,
+				"exclusiveMinimum": false
+			  },
+			  "LigningsmæssigtFradragBørneDagplejereStandard": {
+				"description": "Felt 464: Standardfradrag for børnedagplejere (DAPFRDBLB) Børnedagplejeres udgifter med fradrag beregnet som en fast procentdel af lønnen.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "ReguleretTab": {
+			"x-entityname": "ReguleretTab",
+			"x-ui-selectable": true,
+			"properties": {
+			  "ReguleretTabTilÆgtefælle": {
+				"description": "Overførsel til ægtefælle af tab i indkomståret på noterede aktier TA20-7",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretTabFraÆgtefælle": {
+				"description": "Overførsel fra ægtefælle af tab i indkomståret på noterede aktier TA20-8",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ReguleretTabIndeværendeTidligereÅrFremførsel": {
+				"description": "Uudnyttet tab af aktier på reguleret marked fra indeværende og tidligere år til fremførsel. . ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "EjReguleretTab": {
+			"x-entityname": "EjReguleretTab",
+			"x-ui-selectable": true,
+			"properties": {
+			  "EjReguleretTabTilÆgtefælle": {
+				"description": "Aktieindkomst overført til ægtefælle TA20-27 ",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretTabFraÆgtefælle": {
+				"description": "AKTIEINDKOMST OVERFØRT FRA ÆGTEFÆLLE TA20-28",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjReguleretTabTidligereÅrFremførsel": {
+				"description": "Uudnyttet tab fra gamle år på unoterede aktier TA20-26",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Ejendom": {
+			"x-entityname": "Ejendom",
+			"x-ui-selectable": true,
+			"properties": {
+			  "EjendomUdlejningRentekorrektionBeløb": {
+				"description": "Rentekorrektion ved udlejning af fast ejendom til nærtstående.",
+				"type": "number",
+				"x-typeDescription": "Beløbet er topskattegrundlaget, dvs. personlig indkomst i form af lønindtægt og honorarer mv. Beløbet angives som decimaltal, fx. 1500,00"
+			  },
+			  "EjendomsværdiskatIndkomstAktieløn": {
+				"description": "AFGIFTS BERIGTIGET AKTIE LØN",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjendomsværdiskatIndkomstAktieudbytte": {
+				"description": "Udnyttet udbytte grundbeløb vedr ejendomsværdiskat",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "EjendomsgrundskyldAfdødTilÆgtefælleBeløb": {
+				"description": "Her indberettes værdien af grundskyld i forbindelse med dødsfald, felt 442 i forskudopgørelsen (BGSDOED).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  },
+			  "EjendomsgrundskyldSumBeløb": {
+				"description": "Sum af grundskyld brutto (BGSBRUTIALT).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  },
+			  "EjendomsindefrysninglånSumBeløb": {
+				"description": "Det samlede lånebeløb i grundskyld for en ejendom.",
+				"type": "integer",
+				"x-typeDescription": "Et positivt beløb som ingen decimaler har. Værdierne ligger indenfor følgende område: 0 - 99.999.999.999",
+				"maximum": 99999999999,
+				"exclusiveMaximum": false,
+				"minimum": 0,
+				"exclusiveMinimum": false
+			  },
+			  "EjendomPensionistlånSumBeløb": {
+				"description": "Sum af pensionistlån (BPLÅNIALT).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  },
+			  "EjendomsgrundskyldAfdødFraÆgtefælleBeløb": {
+				"description": "Grundskyldsbeløb fra afdød ægtefælle (BGSFÆ).",
+				"type": "integer",
+				"x-typeDescription": "Et positivt heltal, som kan være op til 9 cifre langt startende fra 0 til 999999999"
+			  }
+			}
+		  },
+		  "JubilaeumGratialeFratraedelseGodtgoerelse": {
+			"x-entityname": "JubilæumGratialeFratrædelseGodtgørelse",
+			"x-ui-selectable": true,
+			"properties": {
+			  "JubilæumsGratialeFratrædelsesGodtgørelseBeløb": {
+				"description": "Jubilæumsgratiale og fratrædelsesgodtgørelse, pgf. 7u. Jubilæumsgratiale og fratrædelsesgodtgørelse før fradrag for bundfradrag og am-bidrag. Forskudsopgørelse: Felt 243. (FORSKUD-DB: BPGF7UBRUTT).",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "AfløsningAfPensiontilsagnVederlagBeløb": {
+				"description": "Årsopgørelse: BIDRAGSPLIGTIG JUBILÆUMSGRATIALE Forskudsopgørelse: Vederlag for afløsning af pensionstilsagn med videre. Felt 260. (FORSKUD-DB :BJUBIBRUTTO).",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 18 karakterer samt 2 decimaler. Værdierne ligger indenfor følgende område: -999.999.999.999.999.999,00 til 999.999.999.999.999.999,00 ",
+				"maximum": 1000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -1000000000000000000,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+            "error_response": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "HovedoplysningerSvarREST": {
+                                "$ref": "#/components/schemas/HovedoplysningerSvarREST"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "HovedoplysningerSvarREST"
+                        ]
+                    }
+                ]
+            },
+            "HovedoplysningerSvarREST": {
+                "items": {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "SvarReaktion": {
+                                    "$ref": "#/components/schemas/SvarReaktion"
+                                }
+                            },
+                            "type": "object",
+                            "xml": {
+                                "prefix": "kontekst"
+                            }
+                        },
+                        {
+                            "required": [
+                                "SvarReaktion"
+                            ]
+                        }
+                    ]
+                },
+                "type": "array"
+            },
+            "x-OnBehalfOfUser": {
+                "pattern": "^[.]{0,256}$",
+                "type": "string"
+            },
+            "x-Processing": {
+                "type": "string"
+            },
+            "x-Rute-AfsenderItSystemInstans": {
+                "format": "xs:dateTime",
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                "type": "string"
+            },
+            "x-Rute-AfsenderOrganisation": {
+                "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$",
+                "type": "string"
+            },
+            "x-Rute-ModtagerItSystemInstans": {
+                "format": "xs:dateTime",
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                "type": "string"
+            },
+            "x-Rute-ModtagerOrganisation": {
+                "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$",
+                "type": "string"
+            },
+            "x-TransaktionsId": {
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}(\\.[0-9]+)*$",
+                "type": "string"
+            },
+            "x-TransaktionsTid": {
+                "format": "xs:dateTime",
+                "type": "string"
+            },
+            "SvarReaktion": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "Advis": {
+                                "$ref": "#/components/schemas/Advis"
+                            },
+                            "Fejl": {
+                                "$ref": "#/components/schemas/Fejl"
+                            }
+                        },
+                        "type": "object",
+                        "xml": {
+                            "prefix": "kontekst"
+                        }
+                    },
+                    {
+                        "oneOf": [
+                            {
+                                "required": [
+                                    "Fejl"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "Advis"
+                                ]
+                            },
+                            {
+                                "not": {
+                                    "anyOf": [
+                                        {
+                                            "required": [
+                                                "Fejl"
+                                            ]
+                                        },
+                                        {
+                                            "required": [
+                                                "Advis"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "xml": {
+                    "namespace": "http://kombit.dk/xml/schemas/kontekst/2017/01/01/",
+                    "prefix": "kontekst"
+                }
+            },
+            "Fejl": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "FejlId": {
+                                "description": "Unik identifikation for fejlen fra fejludstederen. Sammen med KildeId er fejlen unik på tværs af systemer.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "FejlTekst": {
+                                "description": "Beskrivende tekst for fejlen. Udfyldes af fejludsteder.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "Identifikation": {
+                                "description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "KildeId": {
+                                "description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "status": {
+                                "description": "HTTP status kode",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "FejlId",
+                            "FejlTekst"
+                        ]
+                    }
+                ],
+                "xml": {
+                    "prefix": "kontekst"
+                }
+            },
+            "Advis": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "AdvisId": {
+                                "description": "Unik identifikation for advisen fra advisudstederen. Sammen med KildeId er advisen unik på tværs af systemer.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "AdvisTekst": {
+                                "description": "Beskrivende tekst for advisen. Udfyldes af advisudsteder.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "Identifikation": {
+                                "description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "KildeId": {
+                                "description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "status": {
+                                "description": "HTTP status kode",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "AdvisId",
+                            "AdvisTekst"
+                        ]
+                    }
+                ],
+                "xml": {
+                    "prefix": "kontekst"
+                }
+            },
+        },
+        "securitySchemes": {
+            "adgangsgrundlagAuth": {
+                "in": "header",
+                "name": "ufst-adgangsgrundlag",
+                "type": "apiKey"
+            },
+            "bearerAuth": {
+                "bearerFormat": "JWT",
+                "scheme": "bearer",
+                "type": "http"
+            }
+        }
+    }
+}

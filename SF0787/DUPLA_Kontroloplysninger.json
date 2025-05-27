@@ -1,0 +1,1528 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+		"x-svnRevision": "r6363",
+		"x-namespace": "http://www.kombit.dk/01/01/2022/",
+		"x-name": "DUPLAKontroloplysninger_1",
+		"x-source": "Serviceplatformen",
+		"x-serviceUUID": "794b1262-fbb1-4dbd-860a-aff40e229d85",
+		"title": "KOMBIT DUPLA Kontroloplysninger",
+		"description": "Servicen er baseret på REST, mens data er repræsenteret som JSON og til servicen findes der en OpenAPI-specifikation.",
+        "contact": {
+            "email": "fki@kombit.dk",
+            "name": "KOMBIT Fælleskommunal Infrastruktur",
+            "url": "https://kombit.dk"
+        },
+        "license": {
+            "name": "KOMBIT / Skatteforvaltningen"
+        },
+        "version": "1.0",
+		"x-functionality": "Servicen er baseret på REST og modtager et GET Request med query parameters til at specificere output.\nData er repræsenteret som JSON og til servicen findes der en OpenAPI-specifikation.\nFor at kunne levere data fra flere forskellige datakilder, struktureret i ca. 75 forskellige redigeringsgrupper, er servicen modelleret i en generisk struktur med anvendelse af metadata. Servicen afviger dermed fra den generelle modelleringsstandard for services, hvor input- og output-strukturer specificeres med forretningsdata iht. skatteforvaltningens logiske informationsmodel. De anvendte metadata er dog også dokumenteret i informationsmodellen.\nKomplethed\nDet er op til den enkelte anvender at oprette en aftale igennem DUPLA, der sikrer at de modtager det korrekte udsnit af data.\nDer udstilles data med historik for de enkelte indkomstår og der udstilles data fra minimum de seneste 10 indkomstår.\nKorrekthed\nServicen udstiller kun validerede data, men indberetninger er tilgængelige både før og efter berigelse af fagsystemerne.\nAktualitet\nData hentes direkte i fagsystemer, hvilket betyder at der er direkte adgang til de nyeste data.",
+		"x-requirements": "Sikkerhed\nDer er krav om et gyldigt aftaleID.\nAftaler oprettes i Dataudvekslingsplatformen.\nDer må fra servicen kun hentes data nødvendigt for aktuelle sager i henhold til aftalen, og der må kun hentes den nødvendige data der skal bruges til sagen.\nData må ikke efterfølgende genbruges til andre formål, og må alene gemmes til at dokumentere rigtigheden af en afgørelse, eller i forbindelse med aktindsigt.\nInformation fra servicen må kun gemmes så længe lovgivning vedrørende logning, aktindsigt eller klagesager tillader det, i forhold til det formål informationer er hentet til.\nVersionering\nTil versionering af servicen bruges der semantisk versionering. Major og minor defineres af informationsarkitekten mens patch defineres af udvikleren. Det giver udvikleren mulighed for at lave fejlrettelser, der ikke kræver ændringer til specifikationen. En wordrapport indeholder derfor kun major- og minor-versionsnummer, mens Open API-specifikationen indeholder det fulde versionsnummer. Første major-version defineres når den første anvender har gennemført acceptancetest. Efterfølgende vil alle ændringer til specifikationen, der bryder med bagudkompatibilitet, resultere i en ny major-release.\n"
+     },
+    "servers": [
+		{
+			"description": "Endepunkt til UFST produktionsmiljø",
+            "url": "https://prod.serviceplatformen.dk/service/DUPLAKontroloplysninger_1"
+		},
+		{
+			"description": "Endepunkt til UFST TFE-miljø",
+            "url": "https://exttest.serviceplatformen.dk/service/DUPLAKontroloplysninger_1"
+		}
+    ],
+    "security": [
+        {
+            "adgangsgrundlagAuth": [ ],
+            "bearerAuth": [ ]
+        }
+    ],
+    "paths": {
+    "/virksomhedskontroloplysninger": {
+      "parameters": [
+				{
+					"$ref": "#/components/parameters/x-TransaktionsId"
+				},
+				{
+					"$ref": "#/components/parameters/x-TransaktionsTid"
+				},
+				{
+					"$ref": "#/components/parameters/x-OnBehalfOfUser"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Processing"
+				},
+				{
+					"description": "Servicen versioneres med Semantisk versionering (Major, Minor, patch), hvor kun Major versioner indeholder breaking changes til snitfladen. Som udgangspunkt er der kun adgang til den nyeste version af services på en et miljø og det er kunderne såvel som service udstillers opgave at finde fejl på de lavere miljøer før en ny release løftes til produktion. Specifikt for nye Major releases kan der aftales en paralleldrift hvor den gamle version kan tilgås ved at specificere x-major-version. Hvis der kaldes med en x-major-version som ikke er tilgængelig modtages en fejl. Når x-major-version ikke er udfyldt kaldes den nyeste version automatisk.",
+					"in": "header",
+					"name": "x-major-version",
+					"required": false,
+					"schema": {
+						"pattern": "([0-9])*",
+						"type": "integer"
+					}
+				}
+      ],
+      "get": {
+        "summary": "VirksomhedskontroloplysningerHent",
+        "description": "Metoden kræver en liste af SE-numre samt et indkomstår og returnerer en liste af kontroloplysninger fra f.eks. forskudsopgørelse og årsopgørelse.",
+        "operationId": "b335dd3d-dff9-4ebe-869d-9b023e25acf3",
+        "x-dataklassifikation": "Fortrolig",
+        "parameters": [
+          {
+            "name": "VirksomhedSENummer",
+            "in": "query",
+            "required": true,
+            "description": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "[0-9]{8}",
+                "description": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem."
+              }
+            }
+          },
+          {
+            "name": "KontrolOplysningRapportIndkomstÅr",
+            "in": "query",
+            "required": true,
+            "description": "Det indkomstår som en samling af kontroloplysninger vedrører.",
+            "schema": {
+              "type": "integer",
+              "description": "Angiver et indkomstår, f.eks. 2005.\nHvis et selskabs regnskabsperiode slutter inden 31/3_xx bliver indkomståret xx minus 1."
+            }
+          }
+        ],
+        "responses": {
+				"200": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/VirksomhedskontroloplysningerHent_response"
+							}
+						}
+					},
+					"description": "Forventet svar ved korrekt forespørgsel",
+					"headers": {
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						}
+					}
+				},
+				"500": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Kald til kilde fejlede. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				},
+				"default": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Fejl. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				}
+        },
+        "x-fuldmagter": [
+          {
+            "id": "SkatteoplysningerForSelskaberMFlPRG",
+            "name": "VirksomhedskontroloplysningerHent",
+            "description": "Med denne fuldmagt har man ret til at hente oplysninger på vegne af en virksomhed",
+            "primaerIdentitet": "VirksomhedSENummer"
+          }
+        ]
+      }
+    },
+    "/personkontroloplysninger": {
+      "parameters": [
+				{
+					"$ref": "#/components/parameters/x-TransaktionsId"
+				},
+				{
+					"$ref": "#/components/parameters/x-TransaktionsTid"
+				},
+				{
+					"$ref": "#/components/parameters/x-OnBehalfOfUser"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-AfsenderItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerOrganisation"
+				},
+				{
+					"$ref": "#/components/parameters/x-Rute-ModtagerItSystemInstans"
+				},
+				{
+					"$ref": "#/components/parameters/x-Processing"
+				},
+				{
+					"description": "Servicen versioneres med Semantisk versionering (Major, Minor, patch), hvor kun Major versioner indeholder breaking changes til snitfladen. Som udgangspunkt er der kun adgang til den nyeste version af services på en et miljø og det er kunderne såvel som service udstillers opgave at finde fejl på de lavere miljøer før en ny release løftes til produktion. Specifikt for nye Major releases kan der aftales en paralleldrift hvor den gamle version kan tilgås ved at specificere x-major-version. Hvis der kaldes med en x-major-version som ikke er tilgængelig modtages en fejl. Når x-major-version ikke er udfyldt kaldes den nyeste version automatisk.",
+					"in": "header",
+					"name": "x-major-version",
+					"required": false,
+					"schema": {
+						"pattern": "([0-9])*",
+						"type": "integer"
+					}
+				}
+      ],
+      "get": {
+        "summary": "PersonkontroloplysningerHent",
+        "description": "Metoden kræver en liste af CPR-numre samt et indkomstår og returnerer en liste af kontroloplysninger fra f.eks. forskudsopgørelse og årsopgørelse.",
+        "operationId": "a0da1606-7f17-438a-a9fa-c2578a652392",
+        "x-dataklassifikation": "Personoplysninger",
+        "parameters": [
+          {
+            "name": "PersonCPRNummer",
+            "in": "query",
+            "required": true,
+            "description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000",
+                "description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person."
+              }
+            }
+          },
+          {
+            "name": "KontrolOplysningRapportIndkomstÅr",
+            "in": "query",
+            "required": true,
+            "description": "Det indkomstår som en samling af kontroloplysninger vedrører.",
+            "schema": {
+              "type": "integer",
+              "description": "Angiver et indkomstår, f.eks. 2005.\nHvis et selskabs regnskabsperiode slutter inden 31/3_xx bliver indkomståret xx minus 1."
+            }
+          }
+        ],
+        "responses": {
+				"200": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PersonkontroloplysningerHent_response"
+							}
+						}
+					},
+					"description": "Forventet svar ved korrekt forespørgsel",
+					"headers": {
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						}
+					}
+				},
+				"500": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Kald til kilde fejlede. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				},
+				"default": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/error_response"
+							}
+						}
+					},
+					"description": "Fejl. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+					"headers": {
+						"x-major-version": {
+							"$ref": "#/components/headers/x-major-version"
+						},
+						"x-request-id": {
+							"$ref": "#/components/headers/x-request-id"
+						},
+						"x-TransaktionsId": {
+							"$ref": "#/components/headers/x-TransaktionsId"
+						},
+						"x-transaktions-id": {
+							"$ref": "#/components/headers/x-transaktions-id"
+						},
+						"x-TransaktionsTid": {
+							"$ref": "#/components/headers/x-TransaktionsTid"
+						}
+					}
+				}
+        },
+        "x-fuldmagter": [
+          {
+            "id": "TSB_WS_R75_PERSON_KONTROL_OPL",
+            "name": "PersonkontroloplysningerHent",
+            "description": "Med denne fuldmagt har man ret til at hente oplysninger på vegne af en borger",
+            "primaerIdentitet": "PersonCPRNummer"
+          }
+        ]
+      }
+    },
+    },
+    "components": {
+        "headers": {
+            "ufst-adgangsgrundlag": {
+                "description": "UFST-adgangsgrundlag indeholder id på hvilken aftale der ønskes at gøres brug af, alternativt for rolle-baserede api'er, hvilken af identitetens rolle der ønskes at authentificere som",
+                "schema": {
+                    "pattern": "urn:ufst:adgangsgrundlag:(?:aftale|rolle):[^[:space:]]+",
+                    "type": "string"
+                }
+            },
+            "x-major-version": {
+                "description": "Servicen versioneres med Semantisk versionering (Major, Minor, patch), hvor kun Major versioner indeholder breaking changes til snitfladen. Som udgangspunkt er der kun adgang til den nyeste version af services på en et miljø og det er kunderne såvel som service udstillers opgave at finde fejl på de lavere miljøer før en ny release løftes til produktion. Specifikt for nye Major releases kan der aftales en paralleldrift hvor den gamle version kan tilgås ved at specificere x-major-version. Hvis der kaldes med en x-major-version som ikke er tilgængelig modtages en fejl. Når x-major-version ikke er udfyldt kaldes den nyeste version automatisk.",
+                "schema": {
+                    "pattern": "([0-9])*",
+                    "type": "integer"
+                }
+            },
+            "x-request-id": {
+                "description": "Request id er et requestidentifikator der bruges til at spore et kald og tilhørende svar. Request id må modsat transaktions id ikke genbruges. Request id skal være en UUID version 4, jf. ietf RFC 4122.",
+                "schema": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                }
+            },
+            "x-TransaktionsId": {
+                "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsId"
+                }
+            },
+            "x-transaktions-id": {
+                "description": "Transaktions id er en universelt transaktionidentifikator der bruges til at spore en samlet handling på tværs af flere kald og systemer. Hvis en handling resultere i flere kald skal Transaktions id genbruges og hvis et kald finder sted grundet en handling i et andet system skal transaktions id fra den oprindelige handling bruges til videre kald. Transaktions id skal være en UUID version 4, jf. ietf RFC 4122 og skal kunne korreleres med logfiler fra det kaldende system for altid at kunne svare på hvem der er ansvarlig for den handling der har resulteret i kaldet.",
+                "schema": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                }
+            },
+            "x-TransaktionsTid": {
+                "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsTid"
+                }
+            }
+        },
+        "parameters": {
+            "x-OnBehalfOfUser": {
+                "description": "Identifikation af en bruger i det kaldende system",
+                "in": "header",
+                "name": "x-OnBehalfOfUser",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-OnBehalfOfUser"
+                }
+            },
+            "x-Processing": {
+                "description": "Mulighed for at passere yderligere kontekstuelle variable, f.eks. instrukser til teststubbe.",
+                "in": "header",
+                "name": "x-Processing",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Processing"
+                }
+            },
+            "x-Rute-AfsenderItSystemInstans": {
+                "description": "En UUID der identificerer kaldende it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+                "in": "header",
+                "name": "x-Rute-AfsenderItSystemInstans",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-AfsenderItSystemInstans"
+                }
+            },
+            "x-Rute-AfsenderOrganisation": {
+                "description": "Identificerer kaldende organisation.",
+                "in": "header",
+                "name": "x-Rute-AfsenderOrganisation",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-AfsenderOrganisation"
+                }
+            },
+            "x-Rute-ModtagerItSystemInstans": {
+                "description": "En UUID der identificerer kaldte it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+                "in": "header",
+                "name": "x-Rute-ModtagerItSystemInstans",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-ModtagerItSystemInstans"
+                }
+            },
+            "x-Rute-ModtagerOrganisation": {
+                "description": "Identificerer modtagende organisation.",
+                "in": "header",
+                "name": "x-Rute-ModtagerOrganisation",
+                "required": false,
+                "schema": {
+                    "$ref": "#/components/schemas/x-Rute-ModtagerOrganisation"
+                }
+            },
+            "x-TransaktionsId": {
+                "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+                "in": "header",
+                "name": "x-TransaktionsId",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsId"
+                }
+            },
+            "x-TransaktionsTid": {
+                "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+                "in": "header",
+                "name": "x-TransaktionsTid",
+                "required": true,
+                "schema": {
+                    "$ref": "#/components/schemas/x-TransaktionsTid"
+                }
+            }
+        },
+        "schemas": {
+		  "VirksomhedskontroloplysningerHent_response": {
+			"allOf": [
+				{
+					"properties": {
+						"data": {
+							"items": {
+								"$ref": "#/components/schemas/VirksomhedskontroloplysningerHentResponse"
+							},
+							"type": "array"
+						},
+						"HovedoplysningerSvarREST": {
+							"$ref": "#/components/schemas/HovedoplysningerSvarREST"
+						}
+					},
+					"type": "object"
+				},
+				{
+					"required": [
+						"HovedoplysningerSvarREST"
+					]
+				}
+			]
+		  },
+		  "PersonkontroloplysningerHent_response": {
+			"allOf": [
+				{
+					"properties": {
+						"data": {
+							"items": {
+								"$ref": "#/components/schemas/PersonkontroloplysningerHentResponse"
+							},
+							"type": "array"
+						},
+						"HovedoplysningerSvarREST": {
+							"$ref": "#/components/schemas/HovedoplysningerSvarREST"
+						}
+					},
+					"type": "object"
+				},
+				{
+					"required": [
+						"HovedoplysningerSvarREST"
+					]
+				}
+			]
+		  },
+		  "PersonkontroloplysningerHentResponse": {
+			"x-entityname": "PersonkontroloplysningerHentResponse",
+			"required": [
+			  "type",
+			  "id"
+			],
+			"properties": {
+			  "type": {
+				"type": "string"
+			  },
+			  "id": {
+				"description": "Id skal være et unikt id for et specifik resource objekt, men være stabil på tværs af flere versioner af samme resource object.",
+				"type": "string"
+			  },
+			  "attributes": {
+				"$ref": "#/components/schemas/KontrolOplysningPersonRapport"
+			  }
+			}
+		  },
+		  "KontrolOplysningPersonRapport": {
+			"x-entityname": "KontrolOplysningPersonRapport",
+			"x-ui-selectable": true,
+			"required": [
+			  "PersonCPRNummer",
+			  "KontrolOplysningRapportIndkomstÅr",
+			  "RapportOplysningGruppeStrukturListe"
+			],
+			"properties": {
+			  "PersonCPRNummer": {
+				"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person.",
+				"type": "string",
+				"x-typeDescription": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person.",
+				"pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000"
+			  },
+			  "KontrolOplysningRapportIndkomstÅr": {
+				"description": "Det indkomstår som en samling af kontroloplysninger vedrører.",
+				"type": "integer",
+				"x-typeDescription": "Angiver et indkomstår, f.eks. 2005.\nHvis et selskabs regnskabsperiode slutter inden 31/3_xx bliver indkomståret xx minus 1."
+			  },
+			  "RapportOplysningGruppeStrukturListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/RapportOplysningGruppeStruktur"
+				}
+			  }
+			}
+		  },
+		  "RapportOplysningGruppeStruktur": {
+			"x-entityname": "RapportOplysningGruppeStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningSekvensListe"
+			],
+			"properties": {
+			  "RapportOplysningGruppeNavn": {
+				"description": "Navnet på en rapportoplysningsgruppe. Vil typisk kunne bruges som en afsnitsoverskrift.",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningGruppeNummer": {
+				"description": "Unik identifikation af en rapportoplysningsgruppe.",
+				"type": "integer",
+				"x-typeDescription": "Vilkårligt unikt identifikationsnummer"
+			  },
+			  "RapportOplysningSekvensListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/RapportOplysningSekvens"
+				}
+			  }
+			}
+		  },
+		  "RapportOplysningSekvens": {
+			"x-entityname": "RapportOplysningSekvens",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningSekvensStruktur"
+			],
+			"properties": {
+			  "RapportOplysningSekvensStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningSekvensStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningSekvensStruktur": {
+			"x-entityname": "RapportOplysningSekvensStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningStrukturListe"
+			],
+			"properties": {
+			  "RapportOplysningStrukturListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/RapportOplysningStruktur"
+				}
+			  }
+			}
+		  },
+		  "RapportOplysningStruktur": {
+			"x-entityname": "RapportOplysningStruktur",
+			"x-ui-selectable": true,
+			"properties": {
+			  "RapportOplysningNavn": {
+				"description": "Navn på feltet. Svarer typisk til lede-teksten.",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningNummer": {
+				"description": "Unik identifikation af et felt i rapporten.",
+				"type": "integer",
+				"x-typeDescription": "Heltal på 1-7 decimaler"
+			  },
+			  "IdentifikationListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Identifikation"
+				}
+			  },
+			  "ReferenceListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Reference"
+				}
+			  },
+			  "MarkeringListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Markering"
+				}
+			  },
+			  "BeløbListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Beloeb"
+				}
+			  },
+			  "KvantumListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Kvantum"
+				}
+			  },
+			  "ProcentListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Procent"
+				}
+			  },
+			  "DatoListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/Dato"
+				}
+			  }
+			}
+		  },
+		  "Identifikation": {
+			"x-entityname": "Identifikation",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningIdentifikationStruktur"
+			],
+			"properties": {
+			  "RapportOplysningIdentifikationStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningIdentifikationStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningIdentifikationStruktur": {
+			"x-entityname": "RapportOplysningIdentifikationStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningIdentifikationKvalifikator"
+			],
+			"properties": {
+			  "RapportOplysningIdentifikationKvalifikator": {
+				"description": "Kode der beskriver indholdet i et sæt identifikationsoplysninger. Typisk beskrives rollen for den identificerede person, virksomhed eller myndighed. ",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningIdentifikationKvalifikatorTekst": {
+				"description": "Beskrivelse af tilsvarende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "IdentifikatorValg": {
+				"oneOf": [
+				  {
+					"$ref": "#/components/schemas/JuridiskEnhed"
+				  },
+				  {
+					"$ref": "#/components/schemas/AdministrativEnhed"
+				  },
+				  {
+					"$ref": "#/components/schemas/Myndighed"
+				  },
+				  {
+					"$ref": "#/components/schemas/Person"
+				  },
+				  {
+					"$ref": "#/components/schemas/Skattecenter"
+				  }
+				]
+			  },
+			  "RapportOplysningIdentifikationNavn": {
+				"description": "Navn på en virksomhed, person eller institution.",
+				"type": "string",
+				"x-typeDescription": "Generisk navnefelt.\nBruges til personnavne og virksomhedsnavne m.m."
+			  },
+			  "RapportOplysningAdresseStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningAdresseStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningAdresseStruktur": {
+			"x-entityname": "RapportOplysningAdresseStruktur",
+			"x-ui-selectable": true,
+			"properties": {
+			  "AlternativAdresseAdresseLinie1": {
+				"description": "Adresselinje 1",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAdresseLinie2": {
+				"description": "Adresselinie 2",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAdresseLinie3": {
+				"description": "Adresselinie 3",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAdresseLinie4": {
+				"description": "Adresselinie 4",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAdresseLinie5": {
+				"description": "Adresselinie 5",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAdresseLinie6": {
+				"description": "Adresselinie 6",
+				"type": "string",
+				"x-typeDescription": "Angiver linie i adresse"
+			  },
+			  "AlternativAdresseAnvendelseKode": {
+				"description": "Beskriver adresseringsmuligheder",
+				"type": "integer",
+				"x-typeDescription": "0 = Adressen kan anvendes til direkte adressering\n1 = Adressen kan ikke anvendes til direkte adressering\n8 = Adressen består kun af navn\n9 = Ingen adresse pga. nyt personnummer"
+			  },
+			  "LandKode": {
+				"description": "Landekode",
+				"type": "string",
+				"x-typeDescription": "Udfyldes med 2-bogstavede ISO-landekode (ISO 3166-1-alpha-2 kode).",
+				"pattern": "[A-Z]{2}"
+			  }
+			}
+		  },
+		  "Reference": {
+			"x-entityname": "Reference",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningReferenceStruktur"
+			],
+			"properties": {
+			  "RapportOplysningReferenceStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningReferenceStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningReferenceStruktur": {
+			"x-entityname": "RapportOplysningReferenceStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningReferenceKvalifikator",
+			  "RapportOplysningReferenceTekst"
+			],
+			"properties": {
+			  "RapportOplysningReferenceKvalifikator": {
+				"description": "En kode som beskriver et referenceelement.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningReferenceKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningReferenceTekst": {
+				"description": "Reference som kan bruges som nøgle andre oplysninger fx et journalnummer eller sagsakt.",
+				"type": "string",
+				"x-typeDescription": "Dette er en lang tekst."
+			  }
+			}
+		  },
+		  "Markering": {
+			"x-entityname": "Markering",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningMarkeringStruktur"
+			],
+			"properties": {
+			  "RapportOplysningMarkeringStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningMarkeringStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningMarkeringStruktur": {
+			"x-entityname": "RapportOplysningMarkeringStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningMarkeringKvalifikator"
+			],
+			"properties": {
+			  "RapportOplysningMarkeringKvalifikator": {
+				"description": "En kode som beskriver betydningen af et markeringsfelt.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningMarkeringKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningMarkeringKode": {
+				"description": "En kode som repræsenterer værdien af et markeringsfelt fx en paragraf.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningMarkeringTekst": {
+				"description": "En læselig repræsentation af den tilsvarende markeringskode.",
+				"type": "string"
+			  }
+			}
+		  },
+		  "Beloeb": {
+			"x-entityname": "Beløb",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningBeløbStruktur"
+			],
+			"properties": {
+			  "RapportOplysningBeløbStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningBeloebStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningBeloebStruktur": {
+			"x-entityname": "RapportOplysningBeløbStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningBeløbKvalifikator",
+			  "RapportOplysningBeløbBeløb"
+			],
+			"properties": {
+			  "RapportOplysningBeløbKvalifikator": {
+				"description": "Kode som beskriver indholdet i et beløbsfelt.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningBeløbKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningBeløbBeløb": {
+				"description": "Værdien af et beløb.",
+				"type": "number",
+				"x-typeDescription": "Angiver positive og negative beløb på 20 karakterer samt 2 decimaler.\nVærdierne ligger indenfor følgende område: - 999.999.999.999.999.999,99 - 999.999.999.999.999.999,99",
+				"maximum": 100000000000000000000,
+				"exclusiveMaximum": false,
+				"minimum": -100000000000000000000,
+				"exclusiveMinimum": false
+			  },
+			  "ValutaOplysningKode": {
+				"description": "ISO-kode for den pågældende valuta fx DKK",
+				"type": "string",
+				"x-typeDescription": "Angiver valuta enheden (ISO-møntkoden) for et beløb.\nFx den som en angivelsen er indberettet i, hvis der er tale om en angivelsestype med beløb.\nPå nuværende tidspunkt kan SKAT kun modtage angivelser i danske kroner.",
+				"pattern": "[A-Z]{2,3}"
+			  }
+			}
+		  },
+		  "Kvantum": {
+			"x-entityname": "Kvantum",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningKvantumStruktur"
+			],
+			"properties": {
+			  "RapportOplysningKvantumStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningKvantumStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningKvantumStruktur": {
+			"x-entityname": "RapportOplysningKvantumStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningKvantumKvalifikator",
+			  "RapportOplysningKvantumAntal",
+			  "RapportOplysningKvantumEnhedKode"
+			],
+			"properties": {
+			  "RapportOplysningKvantumKvalifikator": {
+				"description": "Kode som angiver betydningen af et antal eller mål i den konkrete sammenhæng.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningKvantumKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningKvantumAntal": {
+				"description": "Værdien i et kvantumfelt fx et antal kvadratmetre eller et antal aktier. ",
+				"type": "number",
+				"x-typeDescription": "En generisk mængdeangivelse af enheder som ikke er beløb fx et areal. Skal suppleres med en måleenhed."
+			  },
+			  "RapportOplysningKvantumEnhedKode": {
+				"description": "Kode som beskriver måleenheden for et antalfelt. Kan fx være en kode for kvadratmeter.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  }
+			}
+		  },
+		  "Procent": {
+			"x-entityname": "Procent",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningProcentStruktur"
+			],
+			"properties": {
+			  "RapportOplysningProcentStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningProcentStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningProcentStruktur": {
+			"x-entityname": "RapportOplysningProcentStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningProcentKvalifikator",
+			  "RapportOplysningProcentProcenttal"
+			],
+			"properties": {
+			  "RapportOplysningProcentKvalifikator": {
+				"description": "Kode som beskriver et procenttals betydning.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningProcentKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "RapportOplysningProcentProcenttal": {
+				"description": "Værdien af et procenttal fx en sats eller andel.",
+				"type": "number",
+				"x-typeDescription": "Generel procentangivelse som generisk decimaltal i henhold til http://www.w3.org/TR/xmlschema-2/#decimal"
+			  }
+			}
+		  },
+		  "Dato": {
+			"x-entityname": "Dato",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeStruktur"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeStruktur": {
+				"$ref": "#/components/schemas/RapportOplysningPeriodeStruktur"
+			  }
+			}
+		  },
+		  "RapportOplysningPeriodeStruktur": {
+			"x-entityname": "RapportOplysningPeriodeStruktur",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeKvalifikator"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeKvalifikator": {
+				"description": "Beskriver perioden eller datoen.",
+				"type": "string",
+				"x-typeDescription": "En vilkårlig kode på 10 tegn."
+			  },
+			  "RapportOplysningPeriodeKvalifikatorTekst": {
+				"description": "Beskrivelse af tilhørende kvalifikatorkode",
+				"type": "string",
+				"x-typeDescription": "En mindre tekst - typisk et eller få ord - som unikt giver mulighed for identifikationen af et givet begreb.\nI nogle sammenhænge er det også brugt til mindre forklaringer (sætningsniveau)"
+			  },
+			  "PeriodeValg": {
+				"oneOf": [
+				  {
+					"$ref": "#/components/schemas/DatoEnkelt"
+				  },
+				  {
+					"$ref": "#/components/schemas/DatoPeriode"
+				  },
+				  {
+					"$ref": "#/components/schemas/AarMaaned"
+				  },
+				  {
+					"$ref": "#/components/schemas/AarKvartal"
+				  },
+				  {
+					"$ref": "#/components/schemas/Aar"
+				  },
+				  {
+					"$ref": "#/components/schemas/Aarraekke"
+				  }
+				]
+			  }
+			}
+		  },
+		  "JuridiskEnhed": {
+			"x-entityname": "JuridiskEnhed",
+			"x-ui-selectable": true,
+			"required": [
+			  "VirksomhedCVRNummer"
+			],
+			"properties": {
+			  "VirksomhedCVRNummer": {
+				"description": "Det nummer der tildeles juridiske enheder i et Centralt Virksomheds Register (CVR).",
+				"type": "string",
+				"x-typeDescription": "Det nummer der tildeles juridiske enheder i et Centralt Virksomheds Register (CVR).",
+				"pattern": "[0-9]{8}"
+			  }
+			}
+		  },
+		  "AdministrativEnhed": {
+			"x-entityname": "AdministrativEnhed",
+			"x-ui-selectable": true,
+			"required": [
+			  "VirksomhedSENummer"
+			],
+			"properties": {
+			  "VirksomhedSENummer": {
+				"description": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem.",
+				"type": "string",
+				"x-typeDescription": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem.",
+				"pattern": "[0-9]{8}"
+			  }
+			}
+		  },
+		  "Myndighed": {
+			"x-entityname": "Myndighed",
+			"x-ui-selectable": true,
+			"required": [
+			  "MyndighedNummer"
+			],
+			"properties": {
+			  "MyndighedNummer": {
+				"description": "Nummer der entydigt identificerer de for SKAT relevante myndigheder. Nummeret er 4-ciftret og tildeles af Indenrigsministeriet.\nEksempel: Københavns Kommune har nummeret 0101.",
+				"type": "integer",
+				"x-typeDescription": "Nummer der entydigt identificerer de for SKAT relevante myndigheder.",
+				"minimum": 0,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Person": {
+			"x-entityname": "Person",
+			"x-ui-selectable": true,
+			"required": [
+			  "PersonCPRNummer"
+			],
+			"properties": {
+			  "PersonCPRNummer": {
+				"description": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person.",
+				"type": "string",
+				"x-typeDescription": "CPR-nummer er et 10 cifret personnummer der entydigt identificerer en dansk person.",
+				"pattern": "((((0[1-9]|1[0-9]|2[0-9]|3[0-1])(01|03|05|07|08|10|12))|((0[1-9]|1[0-9]|2[0-9]|30)(04|06|09|11))|((0[1-9]|1[0-9]|2[0-9])(02)))[0-9]{6})|0000000000"
+			  }
+			}
+		  },
+		  "Skattecenter": {
+			"x-entityname": "Skattecenter",
+			"x-ui-selectable": true,
+			"required": [
+			  "SkattecenterKode"
+			],
+			"properties": {
+			  "SkattecenterKode": {
+				"description": "SKATs interne unikke identifikation af et skattecenter (80xx).",
+				"type": "integer",
+				"minimum": 1,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "DatoEnkelt": {
+			"x-entityname": "DatoEnkelt",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeDato"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeDato": {
+				"description": "Datoværdien hvor feltet repræsenterer en enkelt dag.",
+				"type": "string",
+				"format": "date",
+				"x-typeDescription": "Alle gyldige datoer i den danske kalender. Noteret år måned dag\nFormatet følger: YYYY-MM-DD\nEksempel: 2020-09-15\n"
+			  }
+			}
+		  },
+		  "DatoPeriode": {
+			"x-entityname": "DatoPeriode",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeStartDato",
+			  "RapportOplysningPeriodeSlutDato"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeStartDato": {
+				"description": "En startdato for en periodeoplysning.",
+				"type": "string",
+				"format": "date",
+				"x-typeDescription": "Alle gyldige datoer i den danske kalender. Noteret år måned dag\nFormatet følger: YYYY-MM-DD\nEksempel: 2020-09-15\n"
+			  },
+			  "RapportOplysningPeriodeSlutDato": {
+				"description": "En periodes startdato.",
+				"type": "string",
+				"format": "date",
+				"x-typeDescription": "Alle gyldige datoer i den danske kalender. Noteret år måned dag\nFormatet følger: YYYY-MM-DD\nEksempel: 2020-09-15\n"
+			  }
+			}
+		  },
+		  "AarMaaned": {
+			"x-entityname": "ÅrMåned",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeÅr",
+			  "RapportOplysningPeriodeMåned"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeÅr": {
+				"description": "Indeværende år - dog medregnes januar det foregående år",
+				"type": "integer",
+				"x-typeDescription": "Alle gyldige årstal i den danske kalender."
+			  },
+			  "RapportOplysningPeriodeMåned": {
+				"description": "Periode angivet som en specifik måned.\nGrundlæggende værdiset:\n01-12\n",
+				"type": "integer",
+				"x-typeDescription": "Angivelses måned (til brug for identifikation af, hvilken indberetningsperiode, der er tale om).\nHer indberettes angivelsesmåneden, til brug for identifikation af, hvilken indberetningsperiode, der er tale om.\nF.eks. skal der for en person, der fylder 59½ år i december 2000, ske indberetning senest i januar 2001. I dette tilfælde indberetts måned som 01.\n"
+			  }
+			}
+		  },
+		  "AarKvartal": {
+			"x-entityname": "ÅrKvartal",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeÅr",
+			  "RapportOplysningPeriodeKvartal"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeÅr": {
+				"description": "Indeværende år - dog medregnes januar det foregående år",
+				"type": "integer",
+				"x-typeDescription": "Alle gyldige årstal i den danske kalender."
+			  },
+			  "RapportOplysningPeriodeKvartal": {
+				"description": "Periode angivet som kvartal.",
+				"type": "integer",
+				"minimum": 1,
+				"exclusiveMinimum": false
+			  }
+			}
+		  },
+		  "Aar": {
+			"x-entityname": "År",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeÅr"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeÅr": {
+				"description": "Indeværende år - dog medregnes januar det foregående år",
+				"type": "integer",
+				"x-typeDescription": "Alle gyldige årstal i den danske kalender."
+			  }
+			}
+		  },
+		  "Aarraekke": {
+			"x-entityname": "Årrække",
+			"x-ui-selectable": true,
+			"required": [
+			  "RapportOplysningPeriodeStartÅr",
+			  "RapportOplysningPeriodeSlutÅr"
+			],
+			"properties": {
+			  "RapportOplysningPeriodeStartÅr": {
+				"description": "Et årstal som indleder en årrække.",
+				"type": "integer",
+				"x-typeDescription": "Alle gyldige årstal i den danske kalender."
+			  },
+			  "RapportOplysningPeriodeSlutÅr": {
+				"description": "Et årstal som afslutter en årrække.",
+				"type": "integer",
+				"x-typeDescription": "Alle gyldige årstal i den danske kalender."
+			  }
+			}
+		  },
+		  "VirksomhedskontroloplysningerHentResponse": {
+			"x-entityname": "VirksomhedskontroloplysningerHentResponse",
+			"required": [
+			  "type",
+			  "id"
+			],
+			"properties": {
+			  "type": {
+				"type": "string"
+			  },
+			  "id": {
+				"description": "Id skal være et unikt id for et specifik resource objekt, men være stabil på tværs af flere versioner af samme resource object.",
+				"type": "string"
+			  },
+			  "attributes": {
+				"$ref": "#/components/schemas/KontrolOplysningVirksomhedRapport"
+			  }
+			}
+		  },
+		  "KontrolOplysningVirksomhedRapport": {
+			"x-entityname": "KontrolOplysningVirksomhedRapport",
+			"x-ui-selectable": true,
+			"required": [
+			  "VirksomhedSENummer",
+			  "KontrolOplysningRapportIndkomstÅr",
+			  "RapportOplysningGruppeStrukturListe"
+			],
+			"properties": {
+			  "VirksomhedSENummer": {
+				"description": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem.",
+				"type": "string",
+				"x-typeDescription": "8-cifret nummer, der entydigt identificerer en registreret virksomhed i Skatteforvaltningens Erhvervssystem.",
+				"pattern": "[0-9]{8}"
+			  },
+			  "KontrolOplysningRapportIndkomstÅr": {
+				"description": "Det indkomstår som en samling af kontroloplysninger vedrører.",
+				"type": "integer",
+				"x-typeDescription": "Angiver et indkomstår, f.eks. 2005.\nHvis et selskabs regnskabsperiode slutter inden 31/3_xx bliver indkomståret xx minus 1."
+			  },
+			  "RapportOplysningGruppeStrukturListe": {
+				"type": "array",
+				"items": {
+				  "$ref": "#/components/schemas/RapportOplysningGruppeStruktur"
+				}
+			  }
+			}
+		  },
+            "error_response": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "HovedoplysningerSvarREST": {
+                                "$ref": "#/components/schemas/HovedoplysningerSvarREST"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "HovedoplysningerSvarREST"
+                        ]
+                    }
+                ]
+            },
+            "HovedoplysningerSvarREST": {
+                "items": {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "SvarReaktion": {
+                                    "$ref": "#/components/schemas/SvarReaktion"
+                                }
+                            },
+                            "type": "object",
+                            "xml": {
+                                "prefix": "kontekst"
+                            }
+                        },
+                        {
+                            "required": [
+                                "SvarReaktion"
+                            ]
+                        }
+                    ]
+                },
+                "type": "array"
+            },
+            "x-OnBehalfOfUser": {
+                "pattern": "^[.]{0,256}$",
+                "type": "string"
+            },
+            "x-Processing": {
+                "type": "string"
+            },
+            "x-Rute-AfsenderItSystemInstans": {
+                "format": "xs:dateTime",
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                "type": "string"
+            },
+            "x-Rute-AfsenderOrganisation": {
+                "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$",
+                "type": "string"
+            },
+            "x-Rute-ModtagerItSystemInstans": {
+                "format": "xs:dateTime",
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                "type": "string"
+            },
+            "x-Rute-ModtagerOrganisation": {
+                "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$",
+                "type": "string"
+            },
+            "x-TransaktionsId": {
+                "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}(\\.[0-9]+)*$",
+                "type": "string"
+            },
+            "x-TransaktionsTid": {
+                "format": "xs:dateTime",
+                "type": "string"
+            },
+            "SvarReaktion": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "Advis": {
+                                "$ref": "#/components/schemas/Advis"
+                            },
+                            "Fejl": {
+                                "$ref": "#/components/schemas/Fejl"
+                            }
+                        },
+                        "type": "object",
+                        "xml": {
+                            "prefix": "kontekst"
+                        }
+                    },
+                    {
+                        "oneOf": [
+                            {
+                                "required": [
+                                    "Fejl"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "Advis"
+                                ]
+                            },
+                            {
+                                "not": {
+                                    "anyOf": [
+                                        {
+                                            "required": [
+                                                "Fejl"
+                                            ]
+                                        },
+                                        {
+                                            "required": [
+                                                "Advis"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "xml": {
+                    "namespace": "http://kombit.dk/xml/schemas/kontekst/2017/01/01/",
+                    "prefix": "kontekst"
+                }
+            },
+            "Fejl": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "FejlId": {
+                                "description": "Unik identifikation for fejlen fra fejludstederen. Sammen med KildeId er fejlen unik på tværs af systemer.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "FejlTekst": {
+                                "description": "Beskrivende tekst for fejlen. Udfyldes af fejludsteder.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "Identifikation": {
+                                "description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "KildeId": {
+                                "description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "status": {
+                                "description": "HTTP status kode",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "FejlId",
+                            "FejlTekst"
+                        ]
+                    }
+                ],
+                "xml": {
+                    "prefix": "kontekst"
+                }
+            },
+            "Advis": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "AdvisId": {
+                                "description": "Unik identifikation for advisen fra advisudstederen. Sammen med KildeId er advisen unik på tværs af systemer.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "AdvisTekst": {
+                                "description": "Beskrivende tekst for advisen. Udfyldes af advisudsteder.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "Identifikation": {
+                                "description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "KildeId": {
+                                "description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            },
+                            "status": {
+                                "description": "HTTP status kode",
+                                "type": "string",
+                                "xml": {
+                                    "prefix": "kontekst"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "required": [
+                            "AdvisId",
+                            "AdvisTekst"
+                        ]
+                    }
+                ],
+                "xml": {
+                    "prefix": "kontekst"
+                }
+            },
+        },
+        "securitySchemes": {
+            "adgangsgrundlagAuth": {
+                "in": "header",
+                "name": "ufst-adgangsgrundlag",
+                "type": "apiKey"
+            },
+            "bearerAuth": {
+                "bearerFormat": "JWT",
+                "scheme": "bearer",
+                "type": "http"
+            }
+        }
+    }
+}

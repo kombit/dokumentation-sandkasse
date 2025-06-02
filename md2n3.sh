@@ -1,7 +1,5 @@
 #!/bin/bash
 
-GITCOMMIT=`git log | grep "commit" | head -1 | gawk '{print $2}'`
-GITURL="https://github.com/kombit/dokumentation-sandkasse/wiki"
 
 
 echo "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ."
@@ -13,8 +11,20 @@ echo "@prefix fn: <http://www.w3.org/2005/xpath-functions#> ."
 echo "@prefix dcmi: <http://purl.org/dc/terms/> .";
 echo "";
 
-for f in `ls -R *.md`
+#for f in `ls -R *.md`
+
+GITROOT=`find . -name '.git' -type d -exec dirname {} \;`
+
+for d in $GITROOT
 do
+(    
+  cd $d
+
+  GITCOMMIT=`git log | grep "commit" | head -1 | gawk '{print $2}'`
+  GITURL=`cat ./.git/config |grep "url = " | gawk '{print $3}'| sed 's/\.git$//g'`
+
+  for f in `find . -name '*.md'`
+  do
     BASENAME=`basename $f .md`
     cat $f | \
     gawk 'BEGIN {
@@ -36,22 +46,29 @@ do
       print "\t\tdcmi:title\t\"" basename "\" ;"  
       print "\t\tdcmi:format\t\"text/markdown\" ;"  
      }
-     if(match($0,"\\(http:|\\(https:"))
+     if(match($0,"\\[.*\\]\\(.*\\)")) # Wildcard kunne godt strammes op
      {
-       split($0,urlarray,"\\(");
-       #split($0,urlarray,"\");
-       for(ix in urlarray)
+       split($0,furlarray,"\\(");
+       #split($0,furlarray,"\");
+       for(ix in furlarray)
        {
-         url=urlarray[ix];
-	 url=substr(url,0,match(url,"\\)")-1);
-	 if(match(url,"^http"))
-	   print "\t\tdcmi:references\t<" url "> ;"  
-         #print url;
+         furl=furlarray[ix];
+	 furl=substr(furl,0,match(furl,"\\)")-1);
+	 if(match(furl,"^http"))                                # Link ud på web
+	   print "\t\tdcmi:references\t<" furl "> ;"
+	 else
+	 if(match(furl,"\.md$"))                                # Lokal fil med md extension
+	   print "\t\tdcmi:references\t<" url "/" furl "> ;"
+	 else
+	 if(length(furl)>0)                                     # GitHub Wiki links udelader .md extension
+	   print "\t\tdcmi:references\t<" url "/" furl ".md> ;"
+         #print furl;
        }
      }
     }
     END {
       print "\t."
     }' filename="$f" basename=$BASENAME commit="$GITCOMMIT" url="$GITURL"
+  done
+)
 done
-

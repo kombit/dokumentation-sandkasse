@@ -48,7 +48,7 @@ do
      }
      if(match($0,"\\[.*\\]\\(.*\\)")) # Wildcard kunne godt strammes op
      {
-       split($0,furlarray,"\\(");
+       split($0,furlarray,"\\]\\(");
        #split($0,furlarray,"\");
        for(ix in furlarray)
        {

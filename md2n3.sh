@@ -21,7 +21,7 @@ do
   cd $d
 
   GITCOMMIT=`git log | grep "commit" | head -1 | gawk '{print $2}'`
-  GITURL=`cat ./.git/config |grep "url = " | gawk '{print $3}'| sed 's/\.git$//g'`
+  GITURL=`cat ./.git/config |grep "url = " | gawk '{print $3}'| sed 's/\.git$//g' | sed 's/\.wiki/\/wiki/g'`
 
   for f in `find . -name '*.md'`
   do
@@ -54,15 +54,18 @@ do
        {
          furl=furlarray[ix];
 	 furl=substr(furl,0,match(furl,"\\)")-1);
-	 if(match(furl,"^http"))                                # Link ud på web
-	   print "\t\tdcmi:references\t<" furl "> ;"
-	 else
-	 if(match(furl,"\.md$"))                                # Lokal fil med md extension
-	   print "\t\tdcmi:references\t<" url "/" furl "> ;"
-	 else
-	 if(length(furl)>0)                                     # GitHub Wiki links udelader .md extension
-	   print "\t\tdcmi:references\t<" url "/" furl ".md> ;"
-         #print furl;
+	 if(!match(furl,"\\("))                                   # Ikke have tilfældige indskudte paranteser i tekster
+	 {
+	   if(match(furl,"^http"))                                # Link ud på web
+	     print "\t\tdcmi:references\t<" furl "> ;"
+	   else
+	   if(match(furl,"\.md$") || match(furl, "[0-9a-f]{40}$")) # Lokal fil med md extension eller specifik version
+	     print "\t\tdcmi:references\t<" url "/" furl "> ;"
+	   else
+	   if(length(furl)>0)                                     # GitHub Wiki links udelader .md extension
+	     print "\t\tdcmi:references\t<" url "/" furl ".md> ;"
+           #print furl;
+	 }
        }
      }
     }

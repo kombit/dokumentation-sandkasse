@@ -4,11 +4,14 @@
 
 echo "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ."
 echo "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
-echo "@prefix sesame: <http://www.openrdf.org/schema/sesame#> ."
 echo "@prefix owl: <http://www.w3.org/2002/07/owl#> ."
 echo "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> ."
-echo "@prefix fn: <http://www.w3.org/2005/xpath-functions#> ."
-echo "@prefix dcmi: <http://purl.org/dc/terms/> .";
+echo "@prefix dcterms: <http://purl.org/dc/terms/> .";
+echo "@prefix qw:    <http://www.qualiware.com/> .";
+echo "@prefix kombitrm: <http://kombit.dk/releasemanagement/> .";
+echo "@prefix provo: <https://www.w3.org/TR/prov-o/#> .";
+echo "@prefix prov:  <http://www.w3.org/ns/prov#> .";
+echo "@prefix www-addr: <https://www.w3.org/Addressing/> .";
 echo "";
 
 #for f in `ls -R *.md`
@@ -41,10 +44,10 @@ do
      if(NR==1)
      { 
       subject=url "/" basename 
-      print "<" subject ">\ta\tdcmi:BibliographicResource  ; "
-      print "\t\t<https://www.w3.org/Addressing/url>\t\"" url "/" basename "/" commit "\" ;"  
-      print "\t\tdcmi:title\t\"" basename "\" ;"  
-      print "\t\tdcmi:format\t\"text/markdown\" ;"  
+      print "<" subject ">\ta\tdcterms:BibliographicResource  ; "
+      print "\t\twww-addr:url\t\"" url "/" basename "/" commit "\" ;"  
+      print "\t\tdcterms:title\t\"" basename "\" ;"  
+      print "\t\tdcterms:format\t\"text/markdown\" ;"  
      }
      if(match($0,"\\[.*\\]\\(.*\\)")) # Wildcard kunne godt strammes op
      {
@@ -57,13 +60,13 @@ do
 	 if(!match(furl,"\\("))                                   # Ikke have tilfældige indskudte paranteser i tekster
 	 {
 	   if(match(furl,"^http"))                                # Link ud på web
-	     print "\t\tdcmi:references\t<" furl "> ;"
+	     print "\t\tdcterms:references\t<" furl "> ;"
 	   else
 	   if(match(furl,"\.md$") || match(furl, "[0-9a-f]{40}$")) # Lokal fil med md extension eller specifik version
-	     print "\t\tdcmi:references\t<" url "/" furl "> ;"
+	     print "\t\tdcterms:references\t<" url "/" furl "> ;"
 	   else
 	   if(length(furl)>0)                                     # GitHub Wiki links udelader .md extension
-	     print "\t\tdcmi:references\t<" url "/" furl ".md> ;"
+	     print "\t\tdcterms:references\t<" url "/" furl ".md> ;"
            #print furl;
 	 }
        }

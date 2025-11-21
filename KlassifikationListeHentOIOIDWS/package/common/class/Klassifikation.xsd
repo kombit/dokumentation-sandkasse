@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         <xs:annotation>
+               <xs:documentation>  
+               
+        Klassifikation
+         er det abstrakte objekt som samler et klassifikationssystem. 
+        Klassifikation
+         holder klassifikationssystemets metadata. Klassifikationssystemet tjener et bestemt forretningsmæssigt formål (fx holder taxonomier for opmarkering af sager).  Klassifikationssystemet er udgøres af et hierarki af 
+        Klasse
+        r, taxonomi. Klassifikationssystemet grupper sine 
+        Klasse
+        r i 
+        Facet
+        ter. Et klassifikationssystem har mindst en 
+        Facet
+        . Klassifikationssystemet har en 
+        Ejer
+        , som fastlægger reglerne for taxonomien, fx opdeling i 
+        Facet
+        ter. Ejeren af klassifikationssystemet kan tillade at andre anvendere af / interessenter i klassifikationssystemet tilføjer egne klasser, som specialisering af klassifikationssystemets 
+        Klasse
+        r.Klassifikationsobjekt er en abstrakt klasse, som gør det muligt at eksponere hver af de tre specialiseringer 
+        Klassifikation
+        , 
+        FacetPlan
+         og 
+        Klasse
+        .  
+            </xs:documentation>
+            </xs:annotation>
+         <xs:include schemaLocation="../types/UUIDType.xsd"/>
+         <xs:include schemaLocation="../types/Tekst300Type.xsd"/>
+         <xs:include schemaLocation="../types/Tekst10KType.xsd"/>
+         <xs:include schemaLocation="../types/Tekst100Type.xsd"/>
+         <xs:include schemaLocation="../types/DatoType.xsd"/>
+         <xs:include schemaLocation="../types/DatoTidType.xsd"/>
+         <xs:include schemaLocation="../types/Tekst50Type.xsd"/>
+         <xs:include schemaLocation="../types/Tekst4096Type.xsd"/>
+         <xs:element name="KlassifikationIdentifikation" type="kombit2017:UUIDType">
+               
+               <xs:annotation>
+                  <xs:documentation>  Unik identifikation af klassifikationen (UUID).  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationTitel" type="kombit2017:Tekst300Type">
+               
+               <xs:annotation>
+                  <xs:documentation>  Klassifikationens titel - navn (kan redigeres).  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationBeskrivelse" type="kombit2017:Tekst10KType">
+               
+               <xs:annotation>
+                  <xs:documentation>  Beskrivelse af indhold og formål med Klassifikationen (kan redigeres).  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationEjer" type="kombit2017:Tekst100Type">
+               
+               <xs:annotation>
+                  <xs:documentation>  Den juridiske enhed (oftest, men ikke begrænset til myndighed), som er ejer af Klassifikationen (Kan ikke redigeres).  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationVirkningFra" type="kombit2017:DatoType">
+               
+               <xs:annotation>
+                  <xs:documentation>  
+        Klassifikationen er gyldig fra og med denne dato. Datoen kan redigeres til en dato tidligere end angivne 
+        VirkningFra
+         under forudsætning af, at kravene til unikke BrugervendtNøgle kan overholdes.  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationVirkningTil" type="kombit2017:DatoType">
+               
+               <xs:annotation>
+                  <xs:documentation>  
+        Klassifikationen har gyldighed til og med Gyldighedsdato minus 1 dag, dvs. dagen før. Gyldighedsperioden er derved eksklusive 
+        VirkningTil
+        . Virkning
+        Til
+         er altid senere end Virkning
+        Fra
+        . Hvis værdien ikke er angivet er gyldighedsperioden uafsluttet. Værdien kan redigeres/udfyldes. Værdien kan angives til dagsdato +2 dag eller senere.  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationRegistreringTidspunkt" type="kombit2017:DatoTidType">
+               
+               <xs:annotation>
+                  <xs:documentation>  Tidspunkt for Klassifikationens oprettelse (kan ikke redigeres).  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationSidstÆndretTidspunkt" type="kombit2017:DatoTidType">
+               
+               <xs:annotation>
+                  <xs:documentation>  Seneste tidspunkt for oprettelse/ajourføring af Klassifikationens redigerbare attributter  
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationBrugervendtNøgle" type="kombit2017:Tekst50Type">
+               
+               <xs:annotation>
+                  <xs:documentation/>
+               </xs:annotation>
+            </xs:element>
+         <xs:element name="KlassifikationRetskilde" type="kombit2017:Tekst4096Type">
+               
+               <xs:annotation>
+                  <xs:documentation>  Hjemmelgrundlag, incl. evt. henvisning til lov og paragraf.   
+      </xs:documentation>
+               </xs:annotation>
+            </xs:element>
+      </xs:schema>

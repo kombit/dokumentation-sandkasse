@@ -1,0 +1,293 @@
+###############################################################################################
+# x-svnRevision: "noRevision
+# x-namespace: "http://www.kombit.dk/int/2022/01/01/
+# x-name: "KlassifikationListHentGQL
+# x-source: "
+# title: KlassifikationListHentGQL
+# description: 
+# license: "KOMBIT"
+# prod url: "https://{$service.location.prod}/services/KlassifikationListHentGQL"
+# exttest url: "https://{$service.location.exttest}/services/KlassifikationListHentGQL"
+# security: [ ]
+
+
+	
+# Tekststreng på op til 4096 karakterer
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 4096
+
+scalar Tekst4096
+
+# En virksomheds forretningsnøgle
+# String
+# OpenAPI type definition: 
+#   string
+#   pattern: [0-9]{8}
+
+scalar CVRNummer
+
+# URN = Uniform Resource Name. Tekststreng, som bruges til at idenficerer navnet på en webressource.
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 4096
+
+scalar URN
+
+# Emneangivelse i KLs Emnesystematik (KLE)Angives i tre niveauer med 2 cifre i hver: F.eks '27.35.28' Hvor niveau 1 er 27:Social serviceniveau 2: 27.35: Almene tilbudniveau 3: 27.35.28 Socialt frikort
+# String
+# OpenAPI type definition: 
+#   string
+#   pattern: (([0-9]{1}\\*)|([0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}\\.[0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}(\\.[0-9]{2}){2}))
+
+scalar KLEEmne
+
+# Angiver dato og tidspunkt.
+# String
+# OpenAPI type definition: 
+#   string
+
+scalar DatoTid
+
+# 
+# Boolean
+# OpenAPI type definition: 
+#   boolean
+
+scalar Markering
+
+# Tekststreng på max 300 karakterer.
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 300
+
+scalar Tekst300
+
+# Generel angivelse en dato.
+# String
+# OpenAPI type definition: 
+#   string
+
+scalar Dato
+
+# Tekst streng på 10.000 tegn
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 10000
+
+scalar Tekst10K
+
+# Tekststreng på max 50 karakterer.
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 50
+
+scalar Tekst50
+
+# Tekststreng på max 100 karakterer.
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 100
+
+scalar Tekst100
+
+# Heltal fra og med 1 til og med 100 uden foranstillede nuller.
+# Int
+# OpenAPI type definition: 
+#   integer
+#   maximum: 100
+#   minimum: 1
+
+scalar TalHel1Til100
+
+# UUID = Universally unique identifier.Et 128-bit nummer, som bruges til at identificere information i it-systemer.
+# String
+# OpenAPI type definition: 
+#   string
+#   pattern: [a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}
+
+scalar UUID
+
+# Tekststreng på max 30 karakterer.
+# String
+# OpenAPI type definition: 
+#   string
+#   maxLength: 30
+
+scalar Tekst30
+
+
+
+# En klasse er en mængde hvori de indgående objekter har en eller flere egenskaber til fælles. Klassen er den specifikke reference, nøgle, til denne mængde.Hvis der ingen begrænsninger er i klassens gyldighed, returneres en tom KlassePubliceretListeHvis der søges data med publicerings-historik (KlassifikationPubliceretMarkering= AktuelMedHistorik), returneres en liste af klassePubliceringer. Der returneres senest gyldige attributter og relationer i den søgte periode (KlassifkationPubliceretFraDato til KlassifikationPubliceretTilDato )Et klassifikationssystem udgøres af klasser. Et objekt kan beskrives gennem flere klasser i klassifikationssystemet, hver af disse klasser skal være ordnet i forskellige facetter under klassifikationssystemet. * Klasseregel * Angiver typen af reglen, dvs. et udtryk for den forretningsmæssige betydning af reglen. * ForældreKlasse *Unik identifikation og brugervendt nøgle af den klasse, som er et niveau op i klassehierarkiet ift. nærværende klasse, forældreklassen (UUID). Vil være blank, såfremt klassen er top niveau under facetten.
+
+type KlasseStruktur {
+	klasseIdentifikation: Tekst30!
+	klasseBrugervendtNoegle: KLEEmne!
+	klasseTitel: Tekst300!
+	klasseBeskrivelse: Tekst10K!
+	klasseSortering: TalHel1Til100
+	klasseRetskilde: Tekst4096
+	klasseAEndringsnotat: Tekst4096
+	klasseEjer: Tekst100
+	klasseEjerCVRNummer: CVRNummer
+	klasseSidstAEndretTidspunkt: DatoTid!
+	klassePubliceretListe: [KlasseStruktur_KlassePubliceretListe]!
+	klasseSoegeordListe: [KlasseStruktur_KlasseSoegeordListe]
+	foraeldreKlasse: KlasseStruktur_ForaeldreKlasse
+	klasseMapningListe: [KlasseStruktur_KlasseMapningListe]
+}
+
+type KlasseStruktur_KlassePubliceretListe {
+	klassePubliceret: KlasseStruktur_KlassePubliceretListe_KlassePubliceret!
+}
+
+type KlasseStruktur_KlassePubliceretListe_KlassePubliceret {
+	klassePubliceretFraDato: Dato
+	klassePubliceretTilDato: Dato
+}
+
+type KlasseStruktur_KlasseSoegeordListe {
+	klasseSoegeord: KlasseStruktur_KlasseSoegeordListe_KlasseSoegeord!
+}
+
+type KlasseStruktur_KlasseSoegeordListe_KlasseSoegeord {
+	soegeordTitel: Tekst50!
+}
+
+type KlasseStruktur_ForaeldreKlasse {
+	klasseIdentifikation: Tekst30!
+	klasseBrugervendtNoegle: KLEEmne!
+}
+
+type KlasseStruktur_KlasseMapningListe {
+	klasseMapning: KlasseStruktur_KlasseMapningListe_KlasseMapning!
+}
+
+type KlasseStruktur_KlasseMapningListe_KlasseMapning {
+	klasseEjer: Tekst100
+	klasseEjerCVRNummer: CVRNummer
+	klasseMapningRolle: KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseMapningRolle!
+	klasseIdentifiktionValg: KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg!
+	klasseMapningVirkningFra: Dato
+	klasseMapningVirkningTil: Dato
+}
+
+type KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseMapningRolle {
+	klasseIdentifikation: Tekst30!
+	klasseBrugervendtNoegle: KLEEmne!
+}
+union KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg = KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseIdenitifkationStruktur | KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseUrnReference
+
+type KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseIdenitifkationStruktur {
+	klasseIdenitifkationStruktur: KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseIdenitifkationStruktur_KlasseIdenitifkationStruktur
+}
+
+
+type KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseIdenitifkationStruktur_KlasseIdenitifkationStruktur {
+	klasseIdentifikation: Tekst30!
+	klasseBrugervendtNoegle: KLEEmne!
+	facetIdentifikation: UUID!
+	facetBrugervendtNoegle: Tekst50!
+	klassifikationIdentifikation: UUID!
+	klassifikationBrugervendtNoegle: Tekst50!
+}
+type KlasseStruktur_KlasseMapningListe_KlasseMapning_KlasseIdentifiktionValg_KlasseUrnReference {
+	klasseUrnReference: URN!
+}
+
+
+
+# Ouput af søgning efter klassifikationer
+
+type KlassifikationListeHent_O {
+	klassifikationListe: [KlassifikationListeHent_O_KlassifikationListe]!
+}
+
+type KlassifikationListeHent_O_KlassifikationListe {
+	klassifikationStruktur: KlassifikationStruktur!
+}
+
+# En facet angiver en bestemt synsvinkel på klassificering af de objekter, som klassifikationssystemet udgør taxonomien for. Facetten grupper klasser i klassifikationssystemet. Samme klasse kan kun tilhører en facet - i hele klassens gyldighedsperiode. Facetten er fastlagt sammen med klassifikationssystemet og har derved samme ejer, som klassifikationssystemet og derved samme gyldighedsperiode som klassifikation. Facetter kan opstå og nedlukkes under klassifikationssystemets gyldighedsperiode.
+
+type FacetStruktur {
+	facetIdentifikation: UUID!
+	facetBrugervendtNoegle: Tekst50!
+	facetTitel: Tekst300!
+	facetBeskrivelse: Tekst10K!
+	facetRetskilde: Tekst4096
+	facetEjer: Tekst100
+	facetEjerCVRNummer: CVRNummer
+	facetPubliceretFraDato: Dato
+	facetPubliceretTilDato: Dato
+	facetSidstAEndretTidspunkt: DatoTid!
+	klasseListe: [FacetStruktur_KlasseListe]!
+}
+
+type FacetStruktur_KlasseListe {
+	klasseStruktur: KlasseStruktur!
+}
+
+# Klassifikation er det abstrakte objekt som samler et klassifikationssystem. Klassifikation holder klassifikationssystemets metadata. Klassifikationssystemet tjener et bestemt forretningsmæssigt formål (fx holder taxonomier for opmarkering af sager). Klassifikationssystemet er udgøres af et hierarki af klasser, taxonomi. Klassifikationssystemet grupper sine klasser i facetter. Et klassifikationssystem har mindst en facet. Klassifikationssystemet har en ejer, som fastlægger reglerne for taxonomien, fx opdeling i facetter. Ejeren af klassifikationssystemet kan tillade at andre anvendere af / interessenter i klassifikationssystemet tilføjer egne klasser, som specialisering af klassifikationssystemets klasser.
+
+type KlassifikationStruktur {
+	klassifikationIdentifikation: UUID!
+	klassifikationBrugervendtNoegle: Tekst50!
+	klassifikationTitel: Tekst300!
+	klassifikationBeskrivelse: Tekst10K!
+	klassifikationRetskilde: Tekst4096
+	klassifikationEjer: Tekst100!
+	klassifikationEjerCVRNummer: CVRNummer
+	klassifikationPubliceretFraDato: Dato
+	klassifikationPubliceretTilDato: Dato
+	klassifikationSidstAEndretTidspunkt: DatoTid!
+	facetListe: [KlassifikationStruktur_FacetListe]!
+}
+
+type KlassifikationStruktur_FacetListe {
+	facetStruktur: FacetStruktur!
+}
+
+
+# Der kan hentes klassifikationer ud fra en liste af UUID'er ellerbrugervendte nøgler.Hvis KunAktuelle sættes til SAND eller ikke er udfyldt, returneres data publiceret pr dags dato, KlassifikationPubliceretDatoFra og -Til ignoreres.Hvis KunAktuelle sættes til FALSK returneres alle data, eller data mellem KlassifikationPubliceretDatoFra og -DatoTil, hvis de er udfyldt.
+
+input KlassifikationListeHent_I {
+	klassifikationKriterieListe: [KlassifikationListeHent_I_KlassifikationKriterieListe]!
+	kunAktuelle: Markering
+	klassifikationPubliceretFraDato: Dato
+	klassifikationPubliceretTilDato: Dato
+	kunFaelleskommunaleKlasser: Markering
+}
+
+input KlassifikationListeHent_I_KlassifikationKriterieListe {
+	identifikationKriterie: KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie!
+}
+input KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie {
+	# oneOf:
+	klassifikationIdentifikation: UUID
+	facetIdentifikation: UUID
+	klasseIdentifikation: Tekst30
+	brugervendtNoegleKriterie: KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie_BrugervendtNoegleKriterie
+}
+type KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie_BrugervendtNoegleKriterie {
+	brugervendtNoegleKriterie: KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie_BrugervendtNoegleKriterie_BrugervendtNoegleKriterie
+}
+
+
+input KlassifikationListeHent_I_KlassifikationKriterieListe_IdentifikationKriterie_BrugervendtNoegleKriterie_BrugervendtNoegleKriterie {
+	klassifikationBrugervendtNoegle: Tekst50!
+	facetBrugervendtNoegle: Tekst50
+	klasseBrugervendtNoegle: Tekst50
+}
+
+
+
+type Mutation {
+	klassifikationListeHentGQL(klassifikationListeHent_I: KlassifikationListeHent_I!):  KlassifikationListeHent_O
+
+}

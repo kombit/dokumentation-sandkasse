@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 version="1.0">
+         <xs:include schemaLocation="../types/MarkeringType.xsd"/>
+         
+         <xs:element name="KunAktuelle" type="kombit2017:MarkeringType">
+            <xs:annotation>
+               <xs:documentation>  Angiver om der skal medtages historiske/fremtidige data, eller alene aktuelle, dvs. data publiceret pr dags datoHvis der ikke vælges KunAktuelle, kan tidsintevallet afgrænses med KlassifikationPubliceretDatoFra og KlassifikationPubliceretDatoTil  
+      </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:schema>

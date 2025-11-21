@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:kontekst="http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         
+         
+         <xs:annotation>
+            <xs:documentation>  Der kan hentes klassifikationer ud fra en liste af UUID'er ellerbrugervendte nøgler.Hvis KunAktuelle sættes til SAND eller ikke er udfyldt, returneres data publiceret pr dags dato, KlassifikationPubliceretDatoFra og -Til ignoreres.Hvis KunAktuelle sættes til FALSK returneres alle data, eller data mellem KlassifikationPubliceretDatoFra og -DatoTil, hvis de er udfyldt.   
+      </xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         <xs:import namespace="http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+                    schemaLocation="../context/KontekstType.xsd"/>
+			  
+			      
+         <xs:include schemaLocation="../class/Klassifikation.xsd"/>
+         <xs:include schemaLocation="../class/Facet.xsd"/>
+         <xs:include schemaLocation="../class/Klasse.xsd"/>
+         <xs:include schemaLocation="../operational/KunAktuelle.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlassifikationPubliceretFraDato.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlassifikationPubliceretTilDato.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KunFaelleskommunaleKlasser.xsd"/>
+         
+         <xs:element name="KlassifikationListeHent_I">
+            <xs:complexType>
+               <xs:complexContent>
+                  <xs:extension base="kombit2017:KlassifikationListeHent_IType">
+                     <xs:attribute name="revision">
+                        <xs:simpleType>
+                           <xs:restriction base="xs:string">
+                              <xs:pattern value="r6821"/>
+                           </xs:restriction>
+                        </xs:simpleType>
+                     </xs:attribute>
+                  </xs:extension>
+               </xs:complexContent>
+            </xs:complexType>
+         </xs:element>
+         <xs:complexType name="KlassifikationListeHent_IType">
+            <xs:sequence>
+               <xs:element ref="kontekst:HovedOplysninger"/>
+               <!--Sequence removed-->
+                  <!--Sequence removed-->
+                     <xs:element name="KlassifikationKriterieListe">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="IdentifikationKriterie" minOccurs="1" maxOccurs="unbounded">
+                                 <xs:complexType>
+                                    <xs:choice>
+                                       <xs:sequence>
+                                          <xs:element ref="kombit2017:KlassifikationIdentifikation"/>
+                                       </xs:sequence>
+                                       <xs:sequence>
+                                          <xs:element ref="kombit2017:FacetIdentifikation"/>
+                                       </xs:sequence>
+                                       <xs:sequence>
+                                          <xs:element ref="kombit2017:KlasseIdentifikation"/>
+                                       </xs:sequence>
+                                       <xs:sequence>
+                                          <xs:element name="BrugervendtNøgleKriterie">
+                                             <xs:complexType>
+                                                <xs:sequence>
+                                                   <xs:element ref="kombit2017:KlassifikationBrugervendtNøgle"/>
+                                                   <!--Sequence removed-->
+                                                      <xs:element ref="kombit2017:FacetBrugervendtNøgle" minOccurs="0"/>
+                                                   
+                                                   <!--Sequence removed-->
+                                                      <xs:element ref="kombit2017:KlasseBrugervendtNøgle" minOccurs="0"/>
+                                                   
+                                                </xs:sequence>
+                                             </xs:complexType>
+                                          </xs:element>
+                                       </xs:sequence>
+                                    </xs:choice>
+                                 </xs:complexType>
+                              </xs:element>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                     <!--Sequence removed-->
+                        <xs:element ref="kombit2017:KunAktuelle" minOccurs="0"/>
+                     
+                     <!--Sequence removed-->
+                        <xs:element ref="kombit2017:KlassifikationPubliceretFraDato" minOccurs="0"/>
+                     
+                     <!--Sequence removed-->
+                        <xs:element ref="kombit2017:KlassifikationPubliceretTilDato" minOccurs="0"/>
+                     
+                     <!--Sequence removed-->
+                        <xs:element ref="kombit2017:KunFælleskommunaleKlasser" minOccurs="0"/>
+                     
+                  
+               
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>

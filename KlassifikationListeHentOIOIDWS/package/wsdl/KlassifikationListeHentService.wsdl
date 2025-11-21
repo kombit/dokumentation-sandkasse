@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <wsdl:definitions xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                        xmlns:amsns="http://rep.oio.dk/ams.dk/xml/schemas/2005/09/01/"
+                        xmlns:besked="urn:oio:besked:kuvert:1.0"
+                        xmlns:gulws="urn:oio:skat:gul:ws:1.0.0"
+                        xmlns:fase2="http://rep.oio.dk/skat.dk/eindkomst/"
+                        xmlns:nks="http://rep.oio.dk/oes.dk/nemkonto/xml/schemas/2006/05/01/"
+                        xmlns:dkal="urn:oio:dkal:1.0.0"
+                        xmlns:rumeta="http://service.bm.dk/RequestUserMetadata/2015/01/21/"
+                        xmlns:udkspns="https://service.minpensionssag.dk/"
+                        xmlns:sp="urn:oio:kmd:social:2.0.0"
+                        xmlns:ursns="http://service.bm.dk/pjaktass/4/UnemploymentRegistrationService"
+                        xmlns:oirns="urn:kombit:oir:1.0"
+                        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                        targetNamespace="http://www.kombit.dk/2017/01/01/"
+                        name="KlassifikationListeHentService_2">
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         <xs:annotation xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:documentation>  Servicen benyttes til at hente hele eller dele af klassifikationshierarkier. Servicen har én operation af samme navn som servicen.  
+      </xs:documentation>
+            <xs:documentation>Business service revision: 2.0</xs:documentation>
+            <xs:documentation>Valid from: 2022-03-30T01:01:00.00Z</xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         <wsdl:import namespace="http://www.kombit.dk/2017/01/01/"
+                      location="../common/wsdl/KlassifikationListeHent.wsdl"/>
+         
+         <wsdl:binding name="KlassifikationListeHentServiceBinding"
+                       type="kombit2017:KlassifikationListeHentServicePortType">
+            <soap12:binding xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" style="document"
+                            transport="http://schemas.xmlsoap.org/soap/http"/>
+            <wsp:PolicyReference xmlns:wsp="http://www.w3.org/ns/ws-policy" URI="#ServiceplatformBindingPolicy"/>
+            <wsdl:operation name="KlassifikationListeHent">
+               <soap12:operation xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                                 soapAction="http://www.kombit.dk/2017/01/01/KlassifikationListeHentService_2#KlassifikationListeHent"/>
+               <wsdl:input name="KlassifikationListeHentRequest">
+                  <soap12:body xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                               parts="KlassifikationListeHentRequest"
+                               use="literal"/>
+               </wsdl:input>
+               <wsdl:output name="KlassifikationListeHentRequest">
+                  <soap12:body xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                               parts="KlassifikationListeHentResponse"
+                               use="literal"/>
+               </wsdl:output>
+            </wsdl:operation>
+         </wsdl:binding>
+         <wsdl:service name="KlassifikationListeHentService">
+            <wsdl:port name="KlassifikationListeHentServicePortType"
+                       binding="kombit2017:KlassifikationListeHentServiceBinding">
+               <soap12:address xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                               location="http://{$service.location}/service/KlassifikationListeHentService_2"/>
+            </wsdl:port>
+         </wsdl:service>
+      </wsdl:definitions>

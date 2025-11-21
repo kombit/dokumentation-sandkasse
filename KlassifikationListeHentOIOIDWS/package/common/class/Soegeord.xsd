@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         <xs:annotation>
+               <xs:documentation>  Søgeord...  
+      </xs:documentation>
+            </xs:annotation>
+         <xs:include schemaLocation="../types/Tekst50Type.xsd"/>
+         <xs:element name="SøgeordTitel" type="kombit2017:Tekst50Type">
+               
+               <xs:annotation>
+                  <xs:documentation/>
+               </xs:annotation>
+            </xs:element>
+      </xs:schema>

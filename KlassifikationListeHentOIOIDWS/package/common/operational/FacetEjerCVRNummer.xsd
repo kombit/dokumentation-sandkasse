@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 version="1.0">
+         <xs:include schemaLocation="../types/CVRNummerType.xsd"/>
+         
+         <xs:element name="FacetEjerCVRNummer" type="kombit2017:CVRNummerType">
+            <xs:annotation>
+               <xs:documentation>  CVRNummer på ejer hvis denne er en dansk virksomhed.  
+      </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:schema>

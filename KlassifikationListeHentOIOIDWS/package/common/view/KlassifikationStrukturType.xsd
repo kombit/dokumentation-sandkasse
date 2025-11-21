@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:kontekst="http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         
+         
+         <xs:annotation>
+            <xs:documentation>  Klassifikation er det abstrakte objekt som samler et klassifikationssystem. Klassifikation holder klassifikationssystemets metadata. Klassifikationssystemet tjener et bestemt forretningsmæssigt formål (fx holder taxonomier for opmarkering af sager).  Klassifikationssystemet er udgøres af et hierarki af klasser, taxonomi. Klassifikationssystemet grupper sine klasser i facetter. Et klassifikationssystem har mindst en facet. Klassifikationssystemet har en ejer, som fastlægger reglerne for taxonomien, fx opdeling i facetter. Ejeren af klassifikationssystemet kan tillade at andre anvendere af / interessenter i klassifikationssystemet tilføjer egne klasser, som specialisering af klassifikationssystemets klasser.  
+      </xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         <xs:include schemaLocation="../class/Klassifikation.xsd"/>
+         <xs:include schemaLocation="../operational/KlassifikationEjerCVRNummer.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlassifikationPubliceretFraDato.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlassifikationPubliceretTilDato.xsd"/>
+         
+         <xs:include schemaLocation="../view/FacetStrukturType.xsd"/>
+         
+         <xs:element name="KlassifikationStruktur" type="kombit2017:KlassifikationStrukturType"/>
+         <xs:complexType name="KlassifikationStrukturType">
+            <xs:sequence>
+               <xs:element ref="kombit2017:KlassifikationIdentifikation"/>
+               <xs:element ref="kombit2017:KlassifikationBrugervendtNøgle"/>
+               <xs:element ref="kombit2017:KlassifikationTitel"/>
+               <xs:element ref="kombit2017:KlassifikationBeskrivelse"/>
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlassifikationRetskilde" minOccurs="0"/>
+               
+               <xs:element ref="kombit2017:KlassifikationEjer"/>
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlassifikationEjerCVRNummer" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlassifikationPubliceretFraDato" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlassifikationPubliceretTilDato" minOccurs="0"/>
+               
+               <xs:element ref="kombit2017:KlassifikationSidstÆndretTidspunkt"/>
+               <xs:element name="FacetListe">
+                  <xs:complexType>
+                     <xs:sequence>
+                        <xs:element ref="kombit2017:FacetStruktur" minOccurs="0" maxOccurs="unbounded"/>
+                     </xs:sequence>
+                  </xs:complexType>
+               </xs:element>
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>

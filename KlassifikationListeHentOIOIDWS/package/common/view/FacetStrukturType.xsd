@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:kontekst="http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         
+         
+         <xs:annotation>
+            <xs:documentation>  En facet angiver en bestemt synsvinkel på klassificering af de objekter, som klassifikationssystemet udgør taxonomien for. Facetten grupper klasser i klassifikationssystemet. Samme klasse kan kun tilhører en facet - i hele klassens gyldighedsperiode. Facetten er fastlagt sammen med klassifikationssystemet og har derved samme ejer, som klassifikationssystemet og derved samme gyldighedsperiode som klassifikation. Facetter kan opstå og nedlukkes under klassifikationssystemets gyldighedsperiode.  
+      </xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         <xs:include schemaLocation="../class/Facet.xsd"/>
+         <xs:include schemaLocation="../operational/FacetEjerCVRNummer.xsd"/>
+         
+         <xs:include schemaLocation="../view/KlasseStrukturType.xsd"/>
+         
+         <xs:element name="FacetStruktur" type="kombit2017:FacetStrukturType"/>
+         <xs:complexType name="FacetStrukturType">
+            <xs:sequence>
+               <xs:element ref="kombit2017:FacetIdentifikation"/>
+               <xs:element ref="kombit2017:FacetBrugervendtNøgle"/>
+               <xs:element ref="kombit2017:FacetTitel"/>
+               <xs:element ref="kombit2017:FacetBeskrivelse"/>
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:FacetRetskilde" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:FacetEjer" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:FacetEjerCVRNummer" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:FacetPubliceretFraDato" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:FacetPubliceretTilDato" minOccurs="0"/>
+               
+               <xs:element ref="kombit2017:FacetSidstÆndretTidspunkt"/>
+               <xs:element name="KlasseListe">
+                  <xs:complexType>
+                     <xs:sequence>
+                        <xs:element ref="kombit2017:KlasseStruktur" minOccurs="0" maxOccurs="unbounded"/>
+                     </xs:sequence>
+                  </xs:complexType>
+               </xs:element>
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 version="1.0">
+            
+            <xs:simpleType name="TalHel1Til100Type">
+               <xs:annotation>
+                  <xs:documentation>  Heltal fra og med 1 til og med 100 uden foranstillede nuller.  
+      </xs:documentation>
+               </xs:annotation>
+               <xs:restriction base="xs:integer">
+                  <xs:maxInclusive value="100"/>
+                  <xs:minInclusive value="1"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:schema>

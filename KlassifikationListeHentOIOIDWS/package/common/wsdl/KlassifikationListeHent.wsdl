@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <wsdl:definitions xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                        xmlns:amsns="http://rep.oio.dk/ams.dk/xml/schemas/2005/09/01/"
+                        xmlns:besked="urn:oio:besked:kuvert:1.0"
+                        xmlns:gulws="urn:oio:skat:gul:ws:1.0.0"
+                        xmlns:fase2="http://rep.oio.dk/skat.dk/eindkomst/"
+                        xmlns:nks="http://rep.oio.dk/oes.dk/nemkonto/xml/schemas/2006/05/01/"
+                        xmlns:dkal="urn:oio:dkal:1.0.0"
+                        xmlns:rumeta="http://service.bm.dk/RequestUserMetadata/2015/01/21/"
+                        xmlns:udkspns="https://service.minpensionssag.dk/"
+                        xmlns:sp="urn:oio:kmd:social:2.0.0"
+                        xmlns:ursns="http://service.bm.dk/pjaktass/4/UnemploymentRegistrationService"
+                        xmlns:oirns="urn:kombit:oir:1.0"
+                        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                        targetNamespace="http://www.kombit.dk/2017/01/01/"
+                        name="KlassifikationListeHentService_2">
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         <xs:annotation xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:documentation>  Servicen benyttes til at hente hele eller dele af klassifikationshierarkier. Servicen har én operation af samme navn som servicen.  
+      </xs:documentation>
+            <xs:documentation>Business service revision: 2.0</xs:documentation>
+            <xs:documentation>Valid from: 2022-03-30T01:01:00.00Z</xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         
+         <wsdl:types>
+            <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="http://www.kombit.dk/2017/01/01/">
+               <xsd:include schemaLocation="../service/KlassifikationListeHentInterface.xsd"/>
+               
+            </xsd:schema>
+         </wsdl:types>
+         <wsdl:message name="m_KlassifikationListeHent_O">
+            <wsdl:part name="KlassifikationListeHentResponse"
+                       element="kombit2017:KlassifikationListeHent_O"/>
+         </wsdl:message>
+         <wsdl:message name="m_KlassifikationListeHent_I">
+            <wsdl:part name="KlassifikationListeHentRequest"
+                       element="kombit2017:KlassifikationListeHent_I"/>
+         </wsdl:message>
+         <wsdl:portType name="KlassifikationListeHentServicePortType">
+            <wsdl:operation name="KlassifikationListeHent">
+               <wsdl:input name="KlassifikationListeHentRequest"
+                           message="kombit2017:m_KlassifikationListeHent_I"/>
+               <wsdl:output name="KlassifikationListeHentRequest"
+                            message="kombit2017:m_KlassifikationListeHent_O"/>
+            </wsdl:operation>
+         </wsdl:portType>
+      </wsdl:definitions>

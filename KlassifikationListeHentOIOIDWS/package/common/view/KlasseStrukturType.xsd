@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:kontekst="http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 attributeFormDefault="unqualified"
+                 version="1.0">
+         
+         
+         <xs:annotation>
+            <xs:documentation>  En klasse er en mængde hvori de indgående objekter har en eller flere egenskaber til fælles. Klassen er den specifikke reference, nøgle, til denne mængde.Hvis der ingen begrænsninger er i klassens gyldighed, returneres en tom KlassePubliceretListeHvis der søges data med publicerings-historik (KlassifikationPubliceretMarkering=  AktuelMedHistorik), returneres en liste af klassePubliceringer. Der returneres senest gyldige attributter og relationer i den søgte periode (KlassifkationPubliceretFraDato til KlassifikationPubliceretTilDato )Et klassifikationssystem udgøres af klasser. Et objekt kan beskrives gennem flere klasser i klassifikationssystemet, hver af disse klasser skal være ordnet i forskellige facetter under klassifikationssystemet. * Klasseregel * Angiver typen af reglen, dvs. et udtryk for den forretningsmæssige betydning af reglen. * ForældreKlasse *Unik identifikation og brugervendt nøgle af den klasse, som er et niveau op i klassehierarkiet ift. nærværende klasse, forældreklassen (UUID). Vil være blank, såfremt klassen er top niveau under facetten.  
+      </xs:documentation>
+            <xs:documentation>r6821</xs:documentation>
+         </xs:annotation>
+         <xs:include schemaLocation="../class/Klasse.xsd"/>
+         <xs:include schemaLocation="../operational/SagKLEEmne.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlasseEjerCVRNummer.xsd"/>
+         
+         <xs:include schemaLocation="../class/Soegeord.xsd"/>
+         
+         
+         
+         <xs:include schemaLocation="../class/Facet.xsd"/>
+         <xs:include schemaLocation="../class/Klassifikation.xsd"/>
+         <xs:include schemaLocation="../operational/KlasseMapningVirkningFra.xsd"/>
+         
+         <xs:include schemaLocation="../operational/KlasseMapningVirkningTil.xsd"/>
+         
+         <xs:element name="KlasseStruktur" type="kombit2017:KlasseStrukturType"/>
+         <xs:complexType name="KlasseStrukturType">
+            <xs:sequence>
+               <xs:element ref="kombit2017:KlasseIdentifikation"/>
+               <xs:element ref="kombit2017:KlasseBrugervendtNøgle"/>
+               <xs:element ref="kombit2017:KlasseTitel"/>
+               <xs:element ref="kombit2017:KlasseBeskrivelse"/>
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlasseSortering" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlasseRetskilde" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlasseÆndringsnotat" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlasseEjer" minOccurs="0"/>
+               
+               <!--Sequence removed-->
+                  <xs:element ref="kombit2017:KlasseEjerCVRNummer" minOccurs="0"/>
+               
+               <xs:element ref="kombit2017:KlasseSidstÆndretTidspunkt"/>
+               <xs:element name="KlassePubliceretListe">
+                  <xs:complexType>
+                     <xs:sequence>
+                        <xs:element name="KlassePubliceret" minOccurs="0" maxOccurs="unbounded">
+                           <xs:complexType>
+                              <xs:sequence>
+                                 <!--Sequence removed-->
+                                    <xs:element ref="kombit2017:KlassePubliceretFraDato" minOccurs="0"/>
+                                 
+                                 <!--Sequence removed-->
+                                    <xs:element ref="kombit2017:KlassePubliceretTilDato" minOccurs="0"/>
+                                 
+                              </xs:sequence>
+                           </xs:complexType>
+                        </xs:element>
+                     </xs:sequence>
+                  </xs:complexType>
+               </xs:element>
+               <!--Sequence removed-->
+                  <xs:element name="KlasseSøgeordListe" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="KlasseSøgeord" minOccurs="1" maxOccurs="unbounded">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <xs:element ref="kombit2017:SøgeordTitel"/>
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               
+               <!--Sequence removed-->
+                  <xs:element name="ForældreKlasse" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element ref="kombit2017:KlasseIdentifikation"/>
+                           <xs:element ref="kombit2017:KlasseBrugervendtNøgle"/>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               
+               <!--Sequence removed-->
+                  <xs:element name="KlasseMapningListe" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                           <xs:element name="KlasseMapning" minOccurs="1" maxOccurs="unbounded">
+                              <xs:complexType>
+                                 <xs:sequence>
+                                    <!--Sequence removed-->
+                                       <xs:element ref="kombit2017:KlasseEjer" minOccurs="0"/>
+                                    
+                                    <!--Sequence removed-->
+                                       <xs:element ref="kombit2017:KlasseEjerCVRNummer" minOccurs="0"/>
+                                    
+                                    <xs:element name="KlasseMapningRolle">
+                                       <xs:complexType>
+                                          <xs:sequence>
+                                             <xs:element ref="kombit2017:KlasseIdentifikation"/>
+                                             <xs:element ref="kombit2017:KlasseBrugervendtNøgle"/>
+                                          </xs:sequence>
+                                       </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="KlasseIdentifiktionValg">
+                                       <xs:complexType>
+                                          <xs:choice>
+                                             <xs:sequence>
+                                                <xs:element name="KlasseIdenitifkationStruktur">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                         <xs:element ref="kombit2017:KlasseIdentifikation"/>
+                                                         <xs:element ref="kombit2017:KlasseBrugervendtNøgle"/>
+                                                         <xs:element ref="kombit2017:FacetIdentifikation"/>
+                                                         <xs:element ref="kombit2017:FacetBrugervendtNøgle"/>
+                                                         <xs:element ref="kombit2017:KlassifikationIdentifikation"/>
+                                                         <xs:element ref="kombit2017:KlassifikationBrugervendtNøgle"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                             <xs:sequence>
+                                                <xs:element ref="kombit2017:KlasseUrnReference"/>
+                                             </xs:sequence>
+                                          </xs:choice>
+                                       </xs:complexType>
+                                    </xs:element>
+                                    <!--Sequence removed-->
+                                       <xs:element ref="kombit2017:KlasseMapningVirkningFra" minOccurs="0"/>
+                                    
+                                    <!--Sequence removed-->
+                                       <xs:element ref="kombit2017:KlasseMapningVirkningTil" minOccurs="0"/>
+                                    
+                                 </xs:sequence>
+                              </xs:complexType>
+                           </xs:element>
+                        </xs:sequence>
+                     </xs:complexType>
+                  </xs:element>
+               
+            </xs:sequence>
+         </xs:complexType>
+      </xs:schema>

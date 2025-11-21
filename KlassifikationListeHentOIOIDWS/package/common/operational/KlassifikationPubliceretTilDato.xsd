@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <xs:schema xmlns:kombit2017="http://www.kombit.dk/2017/01/01/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                 targetNamespace="http://www.kombit.dk/2017/01/01/"
+                 elementFormDefault="qualified"
+                 version="1.0">
+         <xs:include schemaLocation="../types/DatoType.xsd"/>
+         
+         <xs:element name="KlassifikationPubliceretTilDato" type="kombit2017:DatoType">
+            <xs:annotation>
+               <xs:documentation>  Klassifikationen er kun gyldig før denne dato. Anvendes dette som søgekriterie er det sluttdato for klassifikationen og dens tilhørende facetter og klassers publicering. Udfyldes datoen ikke betragtes det som plus uendelig  
+      </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:schema>

@@ -12,7 +12,7 @@
 
 Format: application/json
 
-#### Datastruktur: [KlassifikationListeHent_O](#34665beb-5da1-4af2-8706-de0716d9b279)  
+#### Datastruktur: [KlassifikationListeHent_I](#e1d2c614-71b5-480f-9bac-5c172dfa6e22)  
 ### Signal: <a name="e13ce7c1-08be-4248-828e-7cbf6979b422"></a>post_200
 *HTTP Method:* POST
 
@@ -153,6 +153,55 @@ En klasse er en mængde hvori de indgående objekter har en eller flere egenskab
   )  
   
 ~~~
+#### Datastruktur: <a name="e1d2c614-71b5-480f-9bac-5c172dfa6e22"></a>KlassifikationListeHent_I  
+**UUID:** e1d2c614-71b5-480f-9bac-5c172dfa6e22  
+##### Short description
+Der kan hentes klassifikationer ud fra en liste af UUID'er ellerbrugervendte nøgler.Hvis KunAktuelle sættes til SAND eller ikke er udfyldt, returneres data publiceret pr dags dato, KlassifikationPubliceretDatoFra og -Til ignoreres.Hvis KunAktuelle sættes til FALSK returneres alle data, eller data mellem KlassifikationPubliceretDatoFra og -DatoTil, hvis de er udfyldt.
+
+
+~~~
+  *KlassifikationKriterieListe*  
+  {  
+    *IdentifikationKriterie*  
+      [  
+        KlassifikationIdentifikation  
+      ]  
+      |  
+      [  
+        FacetIdentifikation  
+      ]  
+      |  
+      [  
+        KlasseIdentifikation  
+      ]  
+      |  
+      [  
+        *BrugervendtNøgleKriterie*  
+          [  
+            KlassifikationBrugervendtNøgle  
+            (  
+              FacetBrugervendtNøgle  
+            )  
+            (  
+              KlasseBrugervendtNøgle  
+            )  
+          ]  
+      ]  
+  }  
+  (  
+    KunAktuelle  
+  )  
+  (  
+    KlassifikationPubliceretFraDato  
+  )  
+  (  
+    KlassifikationPubliceretTilDato  
+  )  
+  (  
+    KunFælleskommunaleKlasser  
+  )  
+  
+~~~
 #### Datastruktur: <a name="34665beb-5da1-4af2-8706-de0716d9b279"></a>KlassifikationListeHent_O  
 **UUID:** 34665beb-5da1-4af2-8706-de0716d9b279  
 ##### Short description
@@ -237,6 +286,8 @@ Klassifikation er det abstrakte objekt som samler et klassifikationssystem. Klas
 | KlassifikationRetskilde| Tekst4096: string, maxLength:4096 |  |  
 | KlassifikationSidstÆndretTidspunkt| DatoTid: string, format: date-time |  |  
 | KlassifikationTitel| Tekst300: string, maxLength:300 |  |  
+| KunAktuelle| Markering: boolean |   Angiver om der skal medtages historiske/fremtidige data, eller alene aktuelle, dvs. data publiceret pr dags datoHvis der ikke vælges KunAktuelle, kan tidsintevallet afgrænses med KlassifikationPubliceretDatoFra og KlassifikationPubliceretDatoTil          |  
+| KunFælleskommunaleKlasser| Markering: boolean |   Angiver om resultatet kun skal indeholde fælleskommunale data. Hvis Falsk eller udeladt medtages alle data som kalderen har adgang til. F.eks. lokale udvidelser af KLE.          |  
 | SagKLEEmne| KLEEmne: string, `(([0-9]{1}\\*)|([0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}\\.[0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}(\\.[0-9]{2}){2}))` |   Sagens primære klasse udfyldes med KLE-emne og anvendes som primær dataafgrænsning. KLE-emne udfyldes med 6-cifre i formatet ’99.99.99’. Tilladte værdier:99.*, 99.99.*, 99.99.99          |  
 | SøgeordTitel| Tekst50: string, maxLength:50 |   Søgerord relateret til en Klasse          |  
 

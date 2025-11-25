@@ -1,0 +1,1877 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0",
+    "x-svnRevision": "noRevision",
+    "x-namespace": "http://www.kombit.dk/int/2022/01/01/",
+    "x-prefix": "kombit201722int",
+    "x-name": "KlassifikationListeHentREST",
+    "x-source": "",
+    "title": "KlassifikationListeHentREST",
+    "description": "",
+    "license": {
+      "name": "KOMBIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://{$service.location.prod}/service/KlassifikationListeHentREST"
+    },
+	    {
+      "url": "https://{$service.location.exttest}/service/KlassifikationListeHentREST"
+    }
+  ],
+  "tags": [
+    {
+      "name": "KlassifikationListeHentREST",
+      "description": ""
+    }
+  ],
+  "security": [ {
+      "bearerAuth": [ ]	
+      } ],
+  "paths": {
+    "/KlassifikationListeHentREST": {
+      "parameters": [
+        
+        {
+        	"$ref": "#/components/parameters/x-TransaktionsId"
+        },
+        {
+        	"$ref": "#/components/parameters/x-TransaktionsTid"
+        },
+        {
+        	"$ref": "#/components/parameters/x-RequestId"
+        },
+        {
+        	"$ref": "#/components/parameters/x-OnBehalfOfUser"
+        },
+        {
+        	"$ref": "#/components/parameters/x-Rute-AfsenderOrganisation"
+        },
+        {
+        	"$ref": "#/components/parameters/x-Rute-AfsenderItSystemInstans"
+        },
+        {
+        	"$ref": "#/components/parameters/x-Rute-ModtagerOrganisation"
+        },
+        {
+        	"$ref": "#/components/parameters/x-Rute-ModtagerItSystemInstans"
+        },
+        {
+        	"$ref": "#/components/parameters/x-Processing"
+        }
+      ]
+      ,
+      "post": {
+        "summary": "",
+        "description": "",
+        "operationId": "KlassifikationListeHentREST_post",
+        "parameters": [
+
+	
+	
+          
+        ],
+        "requestBody": {
+		"content": {
+
+              "application/json": {
+                "schema": {
+		  "$ref": "#/components/schemas/KlassifikationListeHent_O"
+                }
+              }
+	    
+		}
+	  }
+        ,
+	 "responses": {
+          "200": {
+            "description": "Det samlede kald gik godt. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+            "content": {
+
+
+              "application/json": {
+                "schema": {
+		  "$ref": "#/components/schemas/KlassifikationListeHentREST_post_response"
+                }
+              }
+	    
+            },
+            "headers": {
+				"x-TransaktionsId": {
+					"$ref": "#/components/headers/x-TransaktionsId"
+				},
+				"x-TransaktionsTid": {
+					"$ref": "#/components/headers/x-TransaktionsTid"
+				},
+				"x-RequestId": {
+					"$ref": "#/components/headers/x-RequestId"
+				}
+			}
+          },
+          "500": {
+            "description": "Kald til kilde fejlede. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+            "content": {
+
+
+              "application/json": {
+                "schema": {
+			"$ref": "#/components/schemas/error_response"
+                }
+              }
+	    
+            },
+            "headers": {
+				"x-TransaktionsId": {
+					"$ref": "#/components/headers/x-TransaktionsId"
+				},
+				"x-TransaktionsTid": {
+					"$ref": "#/components/headers/x-TransaktionsTid"
+				},
+				"x-RequestId": {
+					"$ref": "#/components/headers/x-RequestId"
+				}
+            }
+          },
+          "default": { 
+            "description": "Fejl. Se specifikke svarbeskrivelser i SvarReaktion i body.",
+            "content": {
+
+
+              "application/json": {
+                "schema": {
+			"$ref": "#/components/schemas/error_response"
+                }
+              }
+	    
+            },
+            "headers": {
+				"x-TransaktionsId": {
+					"$ref": "#/components/headers/x-TransaktionsId"
+				},
+				"x-TransaktionsTid": {
+					"$ref": "#/components/headers/x-TransaktionsTid"
+				},
+				"x-RequestId": {
+					"$ref": "#/components/headers/x-RequestId"
+				}
+            }
+          }
+        }
+      }
+      
+    }
+  },
+  "components": {
+      "headers": {
+        "x-TransaktionsId": {
+          "required": true,
+	  "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+	  "schema": {
+	    "$ref": "#/components/schemas/x-TransaktionsId"
+	  }
+        },
+        "x-TransaktionsTid": {
+          "required": true,
+	  "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+	  "schema": {
+	    "$ref": "#/components/schemas/x-TransaktionsTid"
+	    }
+        },
+        "x-RequestId": {
+	  "description": "En UUID der unik identificerer de enkelte kald og eventuelle genkald.",
+	  "schema": {
+	    "$ref": "#/components/schemas/x-RequestId"
+	  }
+        }
+      },
+      "parameters": {
+        "x-TransaktionsId": {
+          "name": "x-TransaktionsId",
+          "in": "header",
+          "required": true,
+          "description": "Unik identifier for konversation. Når kald og svar hænger sammen som dele af samme konversation, bruges samme TransaktionsId i både kald og svar. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsId også videre uændret.",
+          "schema": {
+            "$ref": "#/components/schemas/x-TransaktionsId"
+          }
+        },
+        "x-TransaktionsTid": {
+          "name": "x-TransaktionsTid",
+          "in": "header",
+          "required": true,
+          "description": "Tidsstempel der påsættes af oprindelig kalder, som indikering af kaldstidspunktet som det opfattes af kalder. Når et kald passeres videre til eller fra et undersystem, passeres TransaktionsTid også videre uændret.",
+          "schema": {
+            "$ref": "#/components/schemas/x-TransaktionsTid"
+          }
+        },
+        "x-RequestId": {
+          "name": "x-RequestId",
+          "in": "header",
+          "description": "En UUID der unik identificerer de enkelte kald og eventuelle genkald.",
+          "schema": {
+            "$ref": "#/components/schemas/x-RequestId"
+          }
+        },
+        "x-OnBehalfOfUser": {
+          "name": "x-OnBehalfOfUser",
+          "in": "header",
+          "required": false,
+          "description": "Identifikation af en bruger i det kaldende system",
+          "schema": {
+            "$ref": "#/components/schemas/x-OnBehalfOfUser"
+          }
+        },
+        "x-Rute-AfsenderOrganisation": {
+          "name": "x-Rute-AfsenderOrganisation",
+          "in": "header",
+          "required": false,
+          "description": "Identificerer kaldende organisation.",
+          "schema": {
+            "$ref": "#/components/schemas/x-Rute-AfsenderOrganisation"
+          }
+        },
+        "x-Rute-AfsenderItSystemInstans": {
+          "name": "x-Rute-AfsenderItSystemInstans",
+          "in": "header",
+          "required": false,
+          "description": "En UUID der identificerer kaldende it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+          "schema": {
+            "$ref": "#/components/schemas/x-Rute-AfsenderItSystemInstans"
+          }
+        },
+        "x-Rute-ModtagerOrganisation": {
+          "name": "x-Rute-ModtagerOrganisation",
+          "in": "header",
+          "required": false,
+          "description": "Identificerer modtagende organisation.",
+          "schema": {
+            "$ref": "#/components/schemas/x-Rute-ModtagerOrganisation"
+          }
+        },
+        "x-Rute-ModtagerItSystemInstans": {
+          "name": "x-Rute-ModtagerItSystemInstans",
+          "in": "header",
+          "required": false,
+          "description": "En UUID der identificerer kaldte it-systeminstans, indsat af kalder. UUID refererer til it-systeminstans fra KOMBIT Organisation støttesystem.",
+          "schema": {
+            "$ref": "#/components/schemas/x-Rute-ModtagerItSystemInstans"
+          }
+        },
+        "x-Processing": {
+          "name": "x-Processing",
+          "in": "header",
+          "required": false,
+          "description": "Mulighed for at passere yderligere kontekstuelle variable, f.eks. instrukser til teststubbe.",
+          "schema": {
+            "$ref": "#/components/schemas/x-Processing"
+          }
+        }
+
+	
+
+
+
+      },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+         "type": "http"
+      }	
+
+    },
+    "schemas": {
+	
+      
+        "KlassifikationListeHentREST_post_response": {
+			"type": "object",
+	                "description": "  Ouput af søgning efter klassifikationer         ",
+			"properties": {
+				
+            
+				"KlassifikationListeHent_O": {
+					"$ref": "#/components/schemas/KlassifikationListeHent_O"
+				},
+
+              
+	    
+				"HovedoplysningerSvarREST": {
+					"$ref": "#/components/schemas/HovedoplysningerSvarREST"
+				}
+			}, 
+			"xml": {
+			    "name": "KlassifikationListeHentREST_post_response"
+			},
+			"required": [ "HovedoplysningerSvarREST" ] 
+    }
+      ,
+      
+
+
+	      
+
+	 "KlasseIdentifikation": {
+
+        
+
+	                "description": "           Unik identifikation af          Klasse         n (UUID).                     Tekststreng på max 30 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 30
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseEjerCVRNummer": {
+
+        
+
+	                "description": "  CVRNummer på ejer hvis denne er en dansk virksomhed.            En virksomheds forretningsnøgle         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^[0-9]{8}$"
+					
+
+
+
+         },
+	      
+      
+
+
+
+	"KlasseStruktur": {
+				"type": "object",
+				"description": "  En klasse er en mængde hvori de indgående objekter har en eller flere egenskaber til fælles. Klassen er den specifikke reference, nøgle, til denne mængde.Hvis der ingen begrænsninger er i klassens gyldighed, returneres en tom KlassePubliceretListeHvis der søges data med publicerings-historik (KlassifikationPubliceretMarkering=  AktuelMedHistorik), returneres en liste af klassePubliceringer. Der returneres senest gyldige attributter og relationer i den søgte periode (KlassifkationPubliceretFraDato til KlassifikationPubliceretTilDato )Et klassifikationssystem udgøres af klasser. Et objekt kan beskrives gennem flere klasser i klassifikationssystemet, hver af disse klasser skal være ordnet i forskellige facetter under klassifikationssystemet. * Klasseregel * Angiver typen af reglen, dvs. et udtryk for den forretningsmæssige betydning af reglen. * ForældreKlasse *Unik identifikation og brugervendt nøgle af den klasse, som er et niveau op i klassehierarkiet ift. nærværende klasse, forældreklassen (UUID). Vil være blank, såfremt klassen er top niveau under facetten.         ",
+				"properties": {
+            
+					"KlasseIdentifikation": {
+						"$ref": "#/components/schemas/KlasseIdentifikation"
+					}
+      
+,
+					"KlasseBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlasseBrugervendtNoegle"
+					}
+      
+,
+					"KlasseTitel": {
+						"$ref": "#/components/schemas/KlasseTitel"
+					}
+      
+,
+					"KlasseBeskrivelse": {
+						"$ref": "#/components/schemas/KlasseBeskrivelse"
+					}
+      
+,
+					"KlasseSortering": {
+						"$ref": "#/components/schemas/KlasseSortering"
+					}
+      
+,
+					"KlasseRetskilde": {
+						"$ref": "#/components/schemas/KlasseRetskilde"
+					}
+      
+,
+					"KlasseAEndringsnotat": {
+						"$ref": "#/components/schemas/KlasseAEndringsnotat"
+					}
+      
+,
+					"KlasseEjer": {
+						"$ref": "#/components/schemas/KlasseEjer"
+					}
+      
+,
+					"KlasseEjerCVRNummer": {
+						"$ref": "#/components/schemas/KlasseEjerCVRNummer"
+					}
+      
+,
+					"KlasseSidstAEndretTidspunkt": {
+						"$ref": "#/components/schemas/KlasseSidstAEndretTidspunkt"
+					}
+      
+,
+			"KlassePubliceretListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+			"KlassePubliceret": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"KlassePubliceretFraDato": {
+						"$ref": "#/components/schemas/KlassePubliceretFraDato"
+					}
+      
+,
+					"KlassePubliceretTilDato": {
+						"$ref": "#/components/schemas/KlassePubliceretTilDato"
+					}
+      
+					}
+
+
+
+        
+				}
+      
+						},
+						"required": [ "KlassePubliceret" ]
+				}
+        
+,
+				"minItems": 0
+
+			}
+	  
+,
+			"KlasseSoegeordListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+			"KlasseSoegeord": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"SoegeordTitel": {
+						"$ref": "#/components/schemas/SoegeordTitel"
+					}
+      
+					}
+
+
+
+        
+,
+					"required": [ "SoegeordTitel" ] 
+            
+				}
+      
+						},
+						"required": [ "KlasseSoegeord" ]
+				}
+        
+,
+				"minItems": 1
+
+			}
+	  
+,
+			"ForaeldreKlasse": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"KlasseIdentifikation": {
+						"$ref": "#/components/schemas/KlasseIdentifikation"
+					}
+      
+,
+					"KlasseBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlasseBrugervendtNoegle"
+					}
+      
+					}
+
+
+
+        
+,
+					"required": [ "KlasseIdentifikation","KlasseBrugervendtNoegle" ] 
+            
+				}
+      
+,
+			"KlasseMapningListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+			"KlasseMapning": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"KlasseEjer": {
+						"$ref": "#/components/schemas/KlasseEjer"
+					}
+      
+,
+					"KlasseEjerCVRNummer": {
+						"$ref": "#/components/schemas/KlasseEjerCVRNummer"
+					}
+      
+,
+			"KlasseMapningRolle": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"KlasseIdentifikation": {
+						"$ref": "#/components/schemas/KlasseIdentifikation"
+					}
+      
+,
+					"KlasseBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlasseBrugervendtNoegle"
+					}
+      
+					}
+
+
+
+        
+,
+					"required": [ "KlasseIdentifikation","KlasseBrugervendtNoegle" ] 
+            
+				}
+      
+,
+			"KlasseIdentifiktionValg": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+			"KlasseIdenitifkationStruktur": 
+	
+				{
+					"type": "object",
+					"properties": {
+	
+					"KlasseIdentifikation": {
+						"$ref": "#/components/schemas/KlasseIdentifikation"
+					}
+      
+,
+					"KlasseBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlasseBrugervendtNoegle"
+					}
+      
+,
+					"FacetIdentifikation": {
+						"$ref": "#/components/schemas/FacetIdentifikation"
+					}
+      
+,
+					"FacetBrugervendtNoegle": {
+						"$ref": "#/components/schemas/FacetBrugervendtNoegle"
+					}
+      
+,
+					"KlassifikationIdentifikation": {
+						"$ref": "#/components/schemas/KlassifikationIdentifikation"
+					}
+      
+,
+					"KlassifikationBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlassifikationBrugervendtNoegle"
+					}
+      
+					}
+
+
+
+        
+,
+					"required": [ "KlasseIdentifikation","KlasseBrugervendtNoegle","FacetIdentifikation","FacetBrugervendtNoegle","KlassifikationIdentifikation","KlassifikationBrugervendtNoegle" ] 
+            
+				}
+      ,
+					"KlasseUrnReference": {
+						"$ref": "#/components/schemas/KlasseUrnReference"
+					}
+      
+					}
+
+
+
+        
+				}
+      
+,
+					"KlasseMapningVirkningFra": {
+						"$ref": "#/components/schemas/KlasseMapningVirkningFra"
+					}
+      
+,
+					"KlasseMapningVirkningTil": {
+						"$ref": "#/components/schemas/KlasseMapningVirkningTil"
+					}
+      
+					}
+
+
+
+        
+,
+					"required": [ "KlasseMapningRolle","KlasseIdentifiktionValg" ] 
+            
+				}
+      
+						},
+						"required": [ "KlasseMapning" ]
+				}
+        
+,
+				"minItems": 1
+
+			}
+	  
+				}
+, 
+	                "xml": {
+				"name": "KlasseStruktur",
+				"namespace": "http://www.kombit.dk/int/2022/01/01/",
+				"prefix": "kombit201722int"
+			}
+
+	
+
+        
+
+, 
+				"required": [ "KlasseIdentifikation","KlasseBrugervendtNoegle","KlasseTitel","KlasseBeskrivelse","KlasseSidstAEndretTidspunkt","KlassePubliceretListe" ] 
+            
+
+
+	},
+
+
+      
+
+
+	      
+
+	 "KlassifikationPubliceretTilDato": {
+
+        
+
+	                "description": "  Klassifikationen er kun gyldig før denne dato. Anvendes dette som søgekriterie er det sluttdato for klassifikationen og dens tilhørende facetter og klassers publicering. Udfyldes datoen ikke betragtes det som plus uendelig            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseBrugervendtNoegle": {
+
+        
+
+	                "description": "           Brugervendt identifikation af          Klasse         n          BrugervendtNøgle          er unik sammen med ejer og gyldighedsperiode.            Tekststreng på max 50 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 50
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseMapningVirkningFra": {
+
+        
+
+	                "description": "  Startdato for mapning til en anden klasse            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseAEndringsnotat": {
+
+        
+
+	                "description": "  Når en redaktør ændrer klassens indhold, kan han her skrive hvad og hvorfor, der er ændret            Tekststreng på op til 4096 karakterer         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 4096
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetBeskrivelse": {
+
+        
+
+	                "description": "           Beskrivelse af indhold og formål med          Facet         ten (kan redigeres).            Tekst streng på 10.000 tegn         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 10000
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetRetskilde": {
+
+        
+
+	                "description": "  Hjemmelgrundlag, incl. evt. henvisning til lov og paragraf.             Tekststreng på op til 4096 karakterer         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 4096
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetSidstAEndretTidspunkt": {
+
+        
+
+	                "description": "           Seneste tidspunkt for oprettelse/ajourføring af          Facet         tens redigerbare attributter.            Angiver dato og tidspunkt.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date-time"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationRetskilde": {
+
+        
+
+	                "description": "  Hjemmelgrundlag, incl. evt. henvisning til lov og paragraf.             Tekststreng på op til 4096 karakterer         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 4096
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassePubliceretTilDato": {
+
+        
+
+	                "description": "           Klasse         n har gyldighed til og med Virknin         gTil          minus 1 dag, dvs. dagen før. Gyldighedsperioden er derved eksklusive Virkning         Til         . Virkning         Til          er altid senere end Virkning         Fra         . Hvis værdien ikke er angivet er gyldighedsperioden uafsluttet. Værdien kan redigeres/udfyldes. Værdien kan angives til dagsdato +2 dag eller senere.            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+
+	"KlassifikationListeHent_O": {
+				"type": "object",
+				"description": "  Ouput af søgning efter klassifikationer         ",
+				"properties": {
+            
+			"KlassifikationListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+					"KlassifikationStruktur": {
+						"$ref": "#/components/schemas/KlassifikationStruktur"
+					}
+      
+						},
+						"required": [ "KlassifikationStruktur" ]
+				}
+        
+,
+				"minItems": 1
+
+			}
+	  
+				}
+, 
+	                "xml": {
+				"name": "KlassifikationListeHent_O",
+				"namespace": "http://www.kombit.dk/int/2022/01/01/",
+				"prefix": "kombit201722int"
+			}
+
+	
+
+        
+
+, 
+				"required": [ "KlassifikationListe" ] 
+            
+
+
+	},
+
+
+      
+
+
+	      
+
+	 "FacetEjer": {
+
+        
+
+	                "description": "           Den juridiske enhed (oftest, men ikke begrænset til myndighed), som er          Ejer          af Facetten (Kan ikke redigeres).            Tekststreng på max 100 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 100
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationPubliceretFraDato": {
+
+        
+
+	                "description": "  En klassifikation er gyldig fra og med denne dato.Som søgekriterie er dette startdato for klassifikationen og dens tilhørende facetter og klassers publicering. Hvis datoen ikke udfyldes, betragtes den som minus-uendelig            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseTitel": {
+
+        
+
+	                "description": "           Klasse         ns          Titel          - navn            Tekststreng på max 300 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 300
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetPubliceretTilDato": {
+
+        
+
+	                "description": "           Facet         ten har gyldighed til og med Gyldighedsdato minus 1 dag, dvs. dagen før. Gyldighedsperioden er derved eksklusive          VirkningTil. VirkningTil          er altid senere end Virkning         Fra         . Hvis værdien ikke er angivet er gyldighedsperioden uafsluttet. Værdien kan redigeres/udfyldes. Værdien kan angives til dagsdato +2 dag eller senere.            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "SoegeordTitel": {
+
+        
+
+	                "description": "  Tekststreng på max 50 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 50
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationEjer": {
+
+        
+
+	                "description": "  Den juridiske enhed (oftest, men ikke begrænset til myndighed), som er ejer af Klassifikationen (Kan ikke redigeres).            Tekststreng på max 100 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 100
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseUrnReference": {
+
+        
+
+	                "description": "           En Referencenøgle baseret på URN-syntaksen. Den konkrete syntaks er bestemt af ejeren af          Klassifikationssystem         et.Referencenøglen kan benyttes som alternativ registreringsværdi i udvalgte situationer. Har samme livscyklus som          KlasseBrugervendtNøgle                      URN = Uniform Resource Name. Tekststreng, som bruges til at idenficerer navnet på en webressource.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 4096
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationTitel": {
+
+        
+
+	                "description": "  Klassifikationens titel - navn (kan redigeres).            Tekststreng på max 300 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 300
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseRetskilde": {
+
+        
+
+	                "description": "  Hjemmelgrundlag, incl. evt. henvisning til lov og paragraf.             Tekststreng på op til 4096 karakterer         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 4096
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "SagKLEEmne": {
+
+        
+
+	                "description": "  Sagens primære klasse udfyldes med KLE-emne og anvendes som primær dataafgrænsning. KLE-emne udfyldes med 6-cifre i formatet ’99.99.99’. Tilladte værdier:99.*, 99.99.*, 99.99.99            Emneangivelse i KLs Emnesystematik (KLE)Angives i tre niveauer med 2 cifre i hver: F.eks  '27.35.28' Hvor niveau 1 er 27:Social serviceniveau 2: 27.35: Almene tilbudniveau 3: 27.35.28 Socialt frikort         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^(([0-9]{1}\\*)|([0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}\\.[0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}(\\.[0-9]{2}){2}))$"
+					
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseSidstAEndretTidspunkt": {
+
+        
+
+	                "description": "           Seneste tidspunkt for oprettelse/ajourføring af          Klasse         ns redigerbare attributter.            Angiver dato og tidspunkt.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date-time"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationBrugervendtNoegle": {
+
+        
+
+	                "description": "  Tekststreng på max 50 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 50
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetIdentifikation": {
+
+        
+
+	                "description": "           Unik identifikation af          Facet         ten (UUID).            UUID = Universally unique identifier.Et 128-bit nummer, som bruges til at identificere information i it-systemer.         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+					
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetTitel": {
+
+        
+
+	                "description": "           Facet         tens titel - navn (kan redigeres).            Tekststreng på max 300 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 300
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseEjer": {
+
+        
+
+	                "description": "           Den juridiske enhed (oftest, men ikke begrænset til myndighed), som er          Ejer          af          Klasse         n (Kan ikke redigeres).            Tekststreng på max 100 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 100
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseMapningVirkningTil": {
+
+        
+
+	                "description": "  Slutdato for mapning til en anden klasseMapningen er kun gyldig før Slutdato, ikke på Slutdato.            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetEjerCVRNummer": {
+
+        
+
+	                "description": "  CVRNummer på ejer hvis denne er en dansk virksomhed.            En virksomheds forretningsnøgle         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^[0-9]{8}$"
+					
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassePubliceretFraDato": {
+
+        
+
+	                "description": "           Klasse         n er gyldig fra og med denne dato. Datoen kan redigeres til en dato tidligere end angivne          GyldigFra          under forudsætning af, at kravene til unik          BrugervendtNøgle          kan overholdes.            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationIdentifikation": {
+
+        
+
+	                "description": "  Unik identifikation af klassifikationen (UUID).            UUID = Universally unique identifier.Et 128-bit nummer, som bruges til at identificere information i it-systemer.         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+					
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseSortering": {
+
+        
+
+	                "description": "  Angiver klassens anbefalede sorteringsrækkefølge, når den vises for brugere. Anvendes typisk hvis nogle klasser ønskes fremhævet i lister med mange klasser.  Kan udfyldes med et positivt tal. Hvis der ikke er taget stilling til klassens sortering, bør den vises efter klasse med udfyldt sortering. Klasse med sortering sorteres i stigende rækkefølge, så 1 eksempelvis vises før 10.            Heltal fra og med 1 til og med 100 uden foranstillede nuller.         ",
+
+	   "type": "integer"
+		
+,
+	   "maximum": 100
+,
+	   "minimum": 1
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlasseBeskrivelse": {
+
+        
+
+	                "description": "           Beskrivelse af indhold og formål med          Klasse         n (kan redigeres).            Tekst streng på 10.000 tegn         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 10000
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "FacetPubliceretFraDato": {
+
+        
+
+	                "description": "           Facet         ten er gyldig fra og med denne dato. Datoen kan redigeres til en dato tidligere end angivne Virkning         Fra          under forudsætning af, at kravene til unikke BrugervendtNøgle kan overholdes.            Generel angivelse en dato.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date"
+		
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationEjerCVRNummer": {
+
+        
+
+	                "description": "  CVRNummer på ejer hvis denne er en dansk virksomhed.            En virksomheds forretningsnøgle         ",
+
+	   "type": "string"
+		
+,
+	   "pattern": "^[0-9]{8}$"
+					
+
+
+
+         },
+	      
+      
+
+
+
+	"FacetStruktur": {
+				"type": "object",
+				"description": "  En facet angiver en bestemt synsvinkel på klassificering af de objekter, som klassifikationssystemet udgør taxonomien for. Facetten grupper klasser i klassifikationssystemet. Samme klasse kan kun tilhører en facet - i hele klassens gyldighedsperiode. Facetten er fastlagt sammen med klassifikationssystemet og har derved samme ejer, som klassifikationssystemet og derved samme gyldighedsperiode som klassifikation. Facetter kan opstå og nedlukkes under klassifikationssystemets gyldighedsperiode.         ",
+				"properties": {
+            
+					"FacetIdentifikation": {
+						"$ref": "#/components/schemas/FacetIdentifikation"
+					}
+      
+,
+					"FacetBrugervendtNoegle": {
+						"$ref": "#/components/schemas/FacetBrugervendtNoegle"
+					}
+      
+,
+					"FacetTitel": {
+						"$ref": "#/components/schemas/FacetTitel"
+					}
+      
+,
+					"FacetBeskrivelse": {
+						"$ref": "#/components/schemas/FacetBeskrivelse"
+					}
+      
+,
+					"FacetRetskilde": {
+						"$ref": "#/components/schemas/FacetRetskilde"
+					}
+      
+,
+					"FacetEjer": {
+						"$ref": "#/components/schemas/FacetEjer"
+					}
+      
+,
+					"FacetEjerCVRNummer": {
+						"$ref": "#/components/schemas/FacetEjerCVRNummer"
+					}
+      
+,
+					"FacetPubliceretFraDato": {
+						"$ref": "#/components/schemas/FacetPubliceretFraDato"
+					}
+      
+,
+					"FacetPubliceretTilDato": {
+						"$ref": "#/components/schemas/FacetPubliceretTilDato"
+					}
+      
+,
+					"FacetSidstAEndretTidspunkt": {
+						"$ref": "#/components/schemas/FacetSidstAEndretTidspunkt"
+					}
+      
+,
+			"KlasseListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+					"KlasseStruktur": {
+						"$ref": "#/components/schemas/KlasseStruktur"
+					}
+      
+						},
+						"required": [ "KlasseStruktur" ]
+				}
+        
+,
+				"minItems": 0
+
+			}
+	  
+				}
+, 
+	                "xml": {
+				"name": "FacetStruktur",
+				"namespace": "http://www.kombit.dk/int/2022/01/01/",
+				"prefix": "kombit201722int"
+			}
+
+	
+
+        
+
+, 
+				"required": [ "FacetIdentifikation","FacetBrugervendtNoegle","FacetTitel","FacetBeskrivelse","FacetSidstAEndretTidspunkt","KlasseListe" ] 
+            
+
+
+	},
+
+
+      
+
+
+
+	"KlassifikationStruktur": {
+				"type": "object",
+				"description": "  Klassifikation er det abstrakte objekt som samler et klassifikationssystem. Klassifikation holder klassifikationssystemets metadata. Klassifikationssystemet tjener et bestemt forretningsmæssigt formål (fx holder taxonomier for opmarkering af sager).  Klassifikationssystemet er udgøres af et hierarki af klasser, taxonomi. Klassifikationssystemet grupper sine klasser i facetter. Et klassifikationssystem har mindst en facet. Klassifikationssystemet har en ejer, som fastlægger reglerne for taxonomien, fx opdeling i facetter. Ejeren af klassifikationssystemet kan tillade at andre anvendere af / interessenter i klassifikationssystemet tilføjer egne klasser, som specialisering af klassifikationssystemets klasser.         ",
+				"properties": {
+            
+					"KlassifikationIdentifikation": {
+						"$ref": "#/components/schemas/KlassifikationIdentifikation"
+					}
+      
+,
+					"KlassifikationBrugervendtNoegle": {
+						"$ref": "#/components/schemas/KlassifikationBrugervendtNoegle"
+					}
+      
+,
+					"KlassifikationTitel": {
+						"$ref": "#/components/schemas/KlassifikationTitel"
+					}
+      
+,
+					"KlassifikationBeskrivelse": {
+						"$ref": "#/components/schemas/KlassifikationBeskrivelse"
+					}
+      
+,
+					"KlassifikationRetskilde": {
+						"$ref": "#/components/schemas/KlassifikationRetskilde"
+					}
+      
+,
+					"KlassifikationEjer": {
+						"$ref": "#/components/schemas/KlassifikationEjer"
+					}
+      
+,
+					"KlassifikationEjerCVRNummer": {
+						"$ref": "#/components/schemas/KlassifikationEjerCVRNummer"
+					}
+      
+,
+					"KlassifikationPubliceretFraDato": {
+						"$ref": "#/components/schemas/KlassifikationPubliceretFraDato"
+					}
+      
+,
+					"KlassifikationPubliceretTilDato": {
+						"$ref": "#/components/schemas/KlassifikationPubliceretTilDato"
+					}
+      
+,
+					"KlassifikationSidstAEndretTidspunkt": {
+						"$ref": "#/components/schemas/KlassifikationSidstAEndretTidspunkt"
+					}
+      
+,
+			"FacetListe": 
+	
+
+			{
+				"type": "array",
+				"items": {
+							"type": "object",
+							"properties": {
+	
+					"FacetStruktur": {
+						"$ref": "#/components/schemas/FacetStruktur"
+					}
+      
+						},
+						"required": [ "FacetStruktur" ]
+				}
+        
+,
+				"minItems": 0
+
+			}
+	  
+				}
+, 
+	                "xml": {
+				"name": "KlassifikationStruktur",
+				"namespace": "http://www.kombit.dk/int/2022/01/01/",
+				"prefix": "kombit201722int"
+			}
+
+	
+
+        
+
+, 
+				"required": [ "KlassifikationIdentifikation","KlassifikationBrugervendtNoegle","KlassifikationTitel","KlassifikationBeskrivelse","KlassifikationEjer","KlassifikationSidstAEndretTidspunkt","FacetListe" ] 
+            
+
+
+	},
+
+
+      
+
+
+	      
+
+	 "FacetBrugervendtNoegle": {
+
+        
+
+	                "description": "           Brugervendt identifikation af          Facet         ten.          BrugervendtNøgle          er unik sammen med          Ejer          og gyldighedsperiode.            Tekststreng på max 50 karakterer.         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 50
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationBeskrivelse": {
+
+        
+
+	                "description": "  Beskrivelse af indhold og formål med Klassifikationen (kan redigeres).            Tekst streng på 10.000 tegn         ",
+
+	   "type": "string"
+		
+,
+	   "maxLength": 10000
+
+
+
+         },
+	      
+      
+
+
+	      
+
+	 "KlassifikationSidstAEndretTidspunkt": {
+
+        
+
+	                "description": "  Seneste tidspunkt for oprettelse/ajourføring af Klassifikationens redigerbare attributter            Angiver dato og tidspunkt.         ",
+
+	   "type": "string"
+		
+,
+	   "format": "date-time"
+		
+
+
+
+         },
+	      
+      
+	
+	"x-TransaktionsId": {
+	    "type": "string",
+	    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}(\\.[0-9]+)*$"
+	},
+	"x-TransaktionsTid": {
+	    "type": "string",
+	    "format": "xs:dateTime" 
+	},
+	"x-RequestId": {
+	    "type": "string",
+	    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+	},
+        "x-OnBehalfOfUser": {
+            "type": "string",
+            "pattern": "^[.]{0,256}$"
+        },
+        "x-Rute-AfsenderOrganisation": {
+            "type": "string",
+            "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"
+        },
+        "x-Rute-AfsenderItSystemInstans": {
+            "type": "string",
+	    "format": "uuid",
+            "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+        },
+        "x-Rute-ModtagerOrganisation": {
+            "type": "string",
+            "pattern": "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$"
+        },
+        "x-Rute-ModtagerItSystemInstans": {
+            "type": "string",
+	    "format": "uuid",
+            "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4][0-9A-Fa-f]{3}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+        },
+        "x-Processing": {
+            "type": "string"
+        },
+	"error_response": {
+		"allOf": [
+			{
+				"type": "object",
+				"properties": {
+					"HovedoplysningerSvarREST": {
+						"$ref": "#/components/schemas/HovedoplysningerSvarREST"
+					}
+				},
+				"xml": {
+					"name": "error_response"
+				}
+			},
+			{
+				"required": [
+					"HovedoplysningerSvarREST"
+				]
+			}
+		]
+	},
+	"HovedoplysningerSvarREST": {
+		"type": "array",
+		"items": {
+			"allOf": [
+				{
+					"type": "object",
+					"properties": {
+						"SvarReaktion": {
+							"$ref": "#/components/schemas/SvarReaktion"
+						}
+					},
+					"xml": {
+					    "prefix": "kontekst",
+					    "namespace": "http://kombit.dk/xml/schemas/kontekst/2017/01/01/"
+					}
+				},
+				{
+					"required": [
+						"SvarReaktion"
+					]
+				}
+			]
+		}
+	},
+	"SvarReaktion": {
+		"allOf" : [
+			{
+				"type": "object",
+				"properties": {
+					"Fejl": {
+						"$ref": "#/components/schemas/Fejl"
+					},
+					"Advis": {
+						"$ref": "#/components/schemas/Advis"
+					}
+				},
+				"xml": {
+					"prefix": "kontekst"
+				}
+			},
+			{
+				"oneOf": [
+					{ "required": ["Fejl"] },
+					{ "required": ["Advis"] },
+					{
+						"not":	{
+							"anyOf": [
+								{ "required": ["Fejl"] },
+								{ "required": ["Advis"] }
+							]
+						}
+					}
+				]
+			}
+		],
+		"xml": {
+			"prefix": "kontekst",
+			"name": "SvarReaktion"
+		}
+	},
+	"Fejl": {
+		"allOf" : [
+			{
+				"type": "object",
+				"properties": {
+				  "FejlId": {
+					"type": "string",
+					"description": "Unik identifikation for fejlen fra fejludstederen. Sammen med KildeId er fejlen unik på tværs af systemer.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "FejlTekst": {
+					"type": "string",
+					"description": "Beskrivende tekst for fejlen. Udfyldes af fejludsteder.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "KildeId": {
+					"type": "string",
+					"description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "Identifikation": {
+					"type": "string",
+					"description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "status": {
+					"type": "string",
+					"description": "HTTP status kode",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  }
+				}
+			},
+			{
+				"required": [
+				  "FejlId",
+				  "FejlTekst"
+				]
+			}
+		],
+		"xml": {
+			"prefix": "kontekst"
+		}
+	},
+	"Advis": {
+		"allOf" : [
+			{
+				"type": "object",
+				"properties": {
+				  "AdvisId": {
+					"type": "string",
+					"description": "Unik identifikation for advisen fra advisudstederen. Sammen med KildeId er advisen unik på tværs af systemer.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "AdvisTekst": {
+					"type": "string",
+					"description": "Beskrivende tekst for advisen. Udfyldes af advisudsteder.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "KildeId": {
+					"type": "string",
+					"description": "Kontekst for fejlen eller advisen. Unik identifikation af udstederen. Indsættes af fejl- eller advisudsteder selv. Ved viderepassage af en fejl eller advis, passeres KildeId også videre uændret.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "Identifikation": {
+					"type": "string",
+					"description": "Giver mulighed for, at passere variable værdier der beskriver fejl eller advis detaljeret, og gøre disse variable maskinelt processerbare for modtager.",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  },
+				  "status": {
+					"type": "string",
+					"description": "HTTP status kode",
+					"xml": {
+						"prefix": "kontekst"
+					}
+				  }
+				}
+			},
+			{
+				"required": [
+				  "AdvisId",
+				  "AdvisTekst"
+				]
+			}
+		],
+		"xml": {
+			"prefix": "kontekst"
+		}
+	}
+    }	
+  }
+}
+	  
+

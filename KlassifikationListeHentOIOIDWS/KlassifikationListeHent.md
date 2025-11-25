@@ -284,7 +284,7 @@ Klassifikation er det abstrakte objekt som samler et klassifikationssystem. Klas
 | KlassifikationTitel| Tekst300: </br>*restriction base: string*, </br>*xs:maxLength: 300* |  |  
 | KunAktuelle| Markering: </br>*restriction base: boolean* |   Angiver om der skal medtages historiske/fremtidige data, eller alene aktuelle, dvs. data publiceret pr dags datoHvis der ikke vælges KunAktuelle, kan tidsintevallet afgrænses med KlassifikationPubliceretDatoFra og KlassifikationPubliceretDatoTil          |  
 | KunFælleskommunaleKlasser| Markering: </br>*restriction base: boolean* |   Angiver om resultatet kun skal indeholde fælleskommunale data. Hvis Falsk eller udeladt medtages alle data som kalderen har adgang til. F.eks. lokale udvidelser af KLE.          |  
-| SagKLEEmne| KLEEmne: </br>*restriction base: string*, </br>*xs:pattern: (([0-9]{1}\\*)|([0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}\\.[0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}(\\.[0-9]{2}){2}))* |   Sagens primære klasse udfyldes med KLE-emne og anvendes som primær dataafgrænsning. KLE-emne udfyldes med 6-cifre i formatet ’99.99.99’. Tilladte værdier:99.*, 99.99.*, 99.99.99          |  
+| SagKLEEmne| KLEEmne: </br>*restriction base: string*, </br>*xs:pattern*: *`(([0-9]{1}\\*)|([0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}\\.[0-9]{2}\\.\\*)|([0-9]{2}\\.[0-9]{2}\\.[0-9]{1}\\*)|([0-9]{2}(\\.[0-9]{2}){2}))`* |   Sagens primære klasse udfyldes med KLE-emne og anvendes som primær dataafgrænsning. KLE-emne udfyldes med 6-cifre i formatet ’99.99.99’. Tilladte værdier:99.*, 99.99.*, 99.99.99          |  
 | SøgeordTitel| Tekst50: </br>*restriction base: string*, </br>*xs:maxLength: 50* |   Søgerord relateret til en Klasse          |  
 
 

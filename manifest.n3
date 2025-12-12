@@ -1,0 +1,81 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix qw:    <http://www.qualiware.com/> .
+@prefix kombitrm: <http://kombit.dk/releasemanagement/> .
+@prefix provo: <https://www.w3.org/TR/prov-o/#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix www-addr: <https://www.w3.org/Addressing/> .
+
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide1.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide1.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"TestSide1" ;
+		dcterms:format	"text/markdown" ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/TestSide2.md> ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/TestSide2.md> ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/TestSide3.md> ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/TestSide3.md> ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide2.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide2.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"TestSide2" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide3.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/doc/TestSide3.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"TestSide3" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentGQL/KlassifikationListHentGQL.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentGQL/KlassifikationListHentGQL.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"KlassifikationListHentGQL" ;
+		dcterms:format	"text/markdown" ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/#34665beb-5da1-4af2-8706-de0716d9b279.md> ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentOIOIDWS/KlassifikationListeHent.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentOIOIDWS/KlassifikationListeHent.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"KlassifikationListeHent" ;
+		dcterms:format	"text/markdown" ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/#e1d2c614-71b5-480f-9bac-5c172dfa6e22.md> ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/#34665beb-5da1-4af2-8706-de0716d9b279.md> ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentREST/KlassifikationListeHentREST.json>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentREST/KlassifikationListeHentREST.json/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"KlassifikationListeHentREST.json" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentREST/KlassifikationListeHentREST.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/KlassifikationListeHentREST/KlassifikationListeHentREST.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"KlassifikationListeHentREST" ;
+		dcterms:format	"text/markdown" ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/#e1d2c614-71b5-480f-9bac-5c172dfa6e22.md> ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/tree/main/#34665beb-5da1-4af2-8706-de0716d9b279.md> ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/README.md>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/README.md/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"README" ;
+		dcterms:format	"text/markdown" ;
+		dcterms:references	<https://github.com/kombit/dokumentation-sandkasse/wiki> ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_Forskudsopgørelser.json>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_Forskudsopgørelser.json/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"DUPLA_Forskudsopgørelser.json" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_Kontroloplysninger.json>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_Kontroloplysninger.json/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"DUPLA_Kontroloplysninger.json" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_ÅrsopgørelseHent.json>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0787/DUPLA_ÅrsopgørelseHent.json/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"DUPLA_ÅrsopgørelseHent.json" ;
+		dcterms:format	"text/markdown" ;
+	.
+<https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0788/DUPLALogbog.json>	a	dcterms:BibliographicResource  ; 
+		www-addr:url	"https://github.com/kombit/dokumentation-sandkasse/tree/main/SF0788/DUPLALogbog.json/a69060351c3668f137370a089ce72d5fb79055fe" ;
+		dcterms:title	"DUPLALogbog.json" ;
+		dcterms:format	"text/markdown" ;
+	.
